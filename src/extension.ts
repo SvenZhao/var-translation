@@ -8,26 +8,29 @@ export function activate(context: ExtensionContext) {
 export function deactivate() { }
 async function vscodeTranslate() {
 	const editor = window.activeTextEditor;
-	if (!editor) { return console.log('no open text editor!'); }
+	if (!editor) { return; }
 	const selection = editor.selection;
 	let srcText = editor.document.getText(selection);
 	if (!srcText) { return; }
 	let result: any;
-	result = await google.translate(srcText);
+	// 检查英语跳过
+	const lang = await google.detect(srcText);
+	if (lang === 'en') { return window.showInformationMessage('Translation of the target language is not supported'); }
+	//	翻译内容
+	result = await google.translate({ text: srcText, from: lang, to: 'en' });
 	result = String(result.result[0]);
 	result = new Result(result);
 	result = await Select(result);
-	editor.edit(builder => {
-		builder.replace(selection, result);
-	});
+	//替换文案
+	editor.edit(builder => builder.replace(selection, result));
 }
 async function Select(result: Result) {
 	var items: QuickPickItem[] = [];
-	var opts: QuickPickOptions = { matchOnDescription: true, placeHolder: 'test info :' };
-	items.push({ label: result.camel(false) });
-	items.push({ label: result.camel(true) });
-	items.push({ label: result.underLine() });
-	items.push({ label: result.lineThrough() });
+	var opts: QuickPickOptions = { matchOnDescription: true, placeHolder: 'choose replace' };
+	items.push({ label: result.camel(false), description: 'lowerCamelCase' });
+	items.push({ label: result.underLine(), description: 'underLine' });
+	items.push({ label: result.camel(true), description: 'UpperCamelCase' });
+	items.push({ label: result.lineThrough(), description: 'lineThrough' });
 	const selections = await window.showQuickPick(items, opts);
 	if (!selections) { return; }
 	return selections.label;
