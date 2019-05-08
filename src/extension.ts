@@ -1,7 +1,7 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, Selection } from 'vscode';
 import { google } from 'translation.js';
 export function activate(context: ExtensionContext) {
-	const disposable = commands.registerCommand('extension.vscodeTranslate', vscodeTranslate);
+	const disposable = commands.registerCommand('extension.varTranslation', vscodeTranslate);
 	context.subscriptions.push(disposable);
 }
 
@@ -14,15 +14,20 @@ async function vscodeTranslate() {
 	if (!srcText) { return; }
 	let result: any;
 	// 检查英语跳过
-	const lang = await google.detect(srcText);
-	if (lang === 'en') { return window.showInformationMessage('Translation of the target language is not supported'); }
-	//	翻译内容
-	result = await google.translate({ text: srcText, from: lang, to: 'en' });
-	result = String(result.result[0]);
-	result = new Result(result);
-	result = await Select(result);
-	//替换文案
-	editor.edit(builder => builder.replace(selection, result));
+	try {
+		const lang = await google.detect(srcText);
+		if (lang === 'en') { return window.showInformationMessage('Translation of the target language is not supported'); }
+		//	翻译内容
+		result = await google.translate({ text: srcText, from: lang, to: 'en' });
+		result = String(result.result[0]);
+		result = new Result(result);
+		result = await Select(result);
+		//替换文案
+		editor.edit(builder => builder.replace(selection, result));
+	}
+	catch (err) {
+		window.showInformationMessage('some thing error; maybe Network Error');
+	}
 }
 async function Select(result: Result) {
 	var items: QuickPickItem[] = [];
