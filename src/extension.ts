@@ -1,6 +1,7 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, Selection } from 'vscode';
 import { google } from 'translation.js';
-import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
+const changeCase = require('change-case');
+
 export function activate(context: ExtensionContext) {
 	const disposable = commands.registerCommand('extension.varTranslation', vscodeTranslate);
 	context.subscriptions.push(disposable);
@@ -34,11 +35,11 @@ async function vscodeTranslate() {
 async function Select(result: string) {
 	var items: QuickPickItem[] = [];
 	var opts: QuickPickOptions = { matchOnDescription: true, placeHolder: 'choose replace 选择替换' };
-	items.push({ label: camelCase(result), description: 'camelCase 小驼峰' });
-	items.push({ label: pascalCase(result), description: 'pascalCase 大驼峰' });
-	items.push({ label: snakeCase(result), description: 'snakeCase 下划线' });
-	items.push({ label: paramCase(result), description: 'paramCase 中划线' });
-	items.push({ label: constantCase(result), description: 'constantCase 常量' });
+	items.push({ label: changeCase.camelCase(result), description: 'camelCase 小驼峰' });
+	items.push({ label: changeCase.pascalCase(result), description: 'pascalCase 大驼峰' });
+	items.push({ label: changeCase.snakeCase(result), description: 'snakeCase 下划线' });
+	items.push({ label: changeCase.paramCase(result), description: 'paramCase 中划线' });
+	items.push({ label: changeCase.constantCase(result), description: 'constantCase 常量' });
 	const selections = await window.showQuickPick(items, opts);
 	if (!selections) { return; }
 	return selections.label;
