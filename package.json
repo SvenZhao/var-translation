@@ -4,7 +4,7 @@
   "description": "使用Google Translate API翻译语言到英文并且转换成常见的编码格式",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.23.0"
   },
@@ -52,6 +52,7 @@
     "@types/mocha": "^2.2.42"
   },
   "dependencies": {
+    "change-case": "^3.1.0",
     "translation.js": "^0.7.8"
   },
   "repository": {
