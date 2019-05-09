@@ -3,7 +3,8 @@
   "displayName": "vscode变量翻译命名工具",
   "description": "使用Google Translate API翻译语言到英文并且转换成常见的编码格式",
   "publisher": "svenzhao",
-  "version": "0.0.1",
+  "icon": "images/logo.png",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.23.0"
   },
@@ -23,9 +24,8 @@
     "keybindings": [
       {
         "command": "extension.varTranslation",
-        "key": "meta+t",
-        "mac": "cmd+shift+t",
-        "when": "editorTextFocus"
+        "key": "Alt+shift+t",
+        "mac": "cmd+shift+t"
       }
     ],
     "commands": [
