@@ -2,6 +2,7 @@
   "name": "var-translation",
   "displayName": "vscode变量翻译命名工具",
   "description": "使用Google Translate API翻译语言到英文并且转换成常见的编码格式",
+  "publisher": "svenzhao",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.23.0"
@@ -52,5 +53,10 @@
   },
   "dependencies": {
     "translation.js": "^0.7.8"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SvenZhao/var-translation"
+  },
+  "homepage": "https://github.com/SvenZhao/var-translation/blob/master/README.md"
 }
