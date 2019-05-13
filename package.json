@@ -1,7 +1,7 @@
 {
   "name": "var-translation",
-  "displayName": "vscode变量翻译命名工具",
-  "description": "使用Google Translate API翻译语言到英文并且转换成常见的编码格式",
+  "displayName": "var-translation",
+  "description": "使用翻译引擎快速翻译转换变量到常用的英文命名格式(大小驼峰等)",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
   "version": "0.1.2",
