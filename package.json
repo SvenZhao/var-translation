@@ -35,21 +35,44 @@
         "when": "editorTextFocus",
         "category": "var-translation"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "varTranslation configuration",
+      "properties": {
+        "varTranslation.translationEngine": {
+          "type": "string",
+          "enum": [
+            "google",
+            "youdu",
+            "baidu"
+          ],
+          "enumDescriptions": [
+            "谷歌",
+            "有道",
+            "百度"
+          ],
+          "default": "'google'",
+          "description": "翻译引擎"
+        }
+      }
+    }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run release && npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
+    "release": "standard-version",
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^3.3.1",
-    "vscode": "^1.1.28",
-    "tslint": "^5.12.1",
+    "@types/mocha": "^2.2.42",
     "@types/node": "^10.12.21",
-    "@types/mocha": "^2.2.42"
+    "standard-version": "^6.0.1",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.28"
   },
   "dependencies": {
     "change-case": "^3.1.0",
