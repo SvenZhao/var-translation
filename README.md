@@ -7,11 +7,11 @@
 1. 选中翻译成常用的变量命名方式 默认快捷键:"key": "Alt+shift+t",mac": "cmd+shift+t"
 ![feature X](images/vscode.gif)
 
-1. 直接转换改变英文单词命名格式
-![feature X](images/3.jpg)
+2. 直接转换英文到常用变量命名方式
+![feature X](images/vscode1.gif)
     
-## Release Notes
-没测试 刚弄好 先将就着用吧
 
+3. 配置常用的引擎翻译引擎(默认谷歌)
+![feature X](images/1.png)
 
 
