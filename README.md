@@ -1,5 +1,4 @@
-# translate-var README
-
+# [translate-var](https://marketplace.visualstudio.com/items?itemName=svenzhao.var-translation)
 使用Google Translate API翻译语言到英文,并且转换成常见的编码形式(驼峰 常量等)
 
 ## 快捷键 
