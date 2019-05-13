@@ -1,12 +1,24 @@
-import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, Selection } from 'vscode';
-import { google } from 'translation.js';
+import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
+import { google, youdao, baidu } from 'translation.js';
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
+
 export function activate(context: ExtensionContext) {
 	const disposable = commands.registerCommand('extension.varTranslation', vscodeTranslate);
 	context.subscriptions.push(disposable);
 }
 
 export function deactivate() { }
+/**
+ * 获取翻译引擎配置
+ */
+function getTheTranslationEngine() {
+	const CONFIG = workspace.getConfiguration('varTranslation');
+	const translationEngine = CONFIG.translationEngine;
+	if (translationEngine === 'google') { return google; }
+	if (translationEngine === 'youdao') { return youdao; }
+	if (translationEngine === 'baidu') { return baidu; }
+	return google;
+}
 async function vscodeTranslate() {
 	const editor = window.activeTextEditor;
 	if (!editor) { return; }
@@ -14,12 +26,14 @@ async function vscodeTranslate() {
 	let srcText = editor.document.getText(selection);
 	if (!srcText) { return; }
 	let result: any;
+
 	try {
-		const lang = await google.detect(srcText);
+		const engine = getTheTranslationEngine();
+		const lang = await engine.detect(srcText);
 		// 检查英语跳过
 		if (lang !== 'en') {
 			//	翻译内容
-			result = await google.translate({ text: srcText, from: lang, to: 'en' });
+			result = await engine.translate({ text: srcText, from: lang, to: 'en' });
 			result = String(result.result[0]);
 		} else { result = srcText; }
 		result = await Select(result);
