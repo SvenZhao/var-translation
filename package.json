@@ -36,6 +36,14 @@
         "category": "var-translation"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorTextFocus",
+          "command": "extension.varTranslation"
+        }
+      ]
+    },
     "configuration": {
       "type": "object",
       "title": "varTranslation configuration",
