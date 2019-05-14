@@ -4,7 +4,7 @@
   "description": "使用翻译引擎快速翻译转换变量到常用的英文命名格式(大小驼峰等)",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "engines": {
     "vscode": "^1.23.0"
   },
