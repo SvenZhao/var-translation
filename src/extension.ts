@@ -1,13 +1,12 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
 import { google, youdao, baidu } from 'translation.js';
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
-import { TranslateResult } from 'translation.js/declaration/api/types';
+import { TranslateResult, StringOrTranslateOptions } from 'translation.js/declaration/api/types';
 
 export function activate(context: ExtensionContext) {
 	const disposable = commands.registerCommand('extension.varTranslation', vscodeTranslate);
 	context.subscriptions.push(disposable);
 }
-
 export function deactivate() { }
 
 async function vscodeTranslate() {
@@ -36,11 +35,11 @@ async function vscodeTranslate() {
 	}
 }
 /**
- * 获取用户选择结果
- * @param {string}word 需要转换的单词 
- * @return {string}转换结果
+ * 用户选择选择转换形式
+ * @param word 需要转换的单词 
+ * @return  用户选择
  */
-async function Select(word: string) {
+async function Select(word: string): Promise<string | undefined> {
 	var items: QuickPickItem[] = [];
 	var opts: QuickPickOptions = { matchOnDescription: true, placeHolder: 'choose replace 选择替换' };
 	items.push({ label: camelCase(word), description: 'camelCase 小驼峰' });
@@ -54,6 +53,7 @@ async function Select(word: string) {
 }
 /**
  * 获取翻译引擎配置
+ * @return 引擎
  */
 function getTheTranslationEngine() {
 	const CONFIG = workspace.getConfiguration('varTranslation');
