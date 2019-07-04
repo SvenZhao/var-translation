@@ -1,7 +1,7 @@
 {
   "name": "var-translation",
   "displayName": "var-translation",
-  "description": "使用翻译引擎快速翻译转换变量到常用的英文命名格式(大小驼峰等)",
+  "description": "Automatically translate words into English variable name",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
   "version": "0.3.1",
@@ -13,8 +13,10 @@
   ],
   "keywords": [
     "translate",
-    "google translate",
-    "翻译"
+    "variable",
+    "camel",
+    "翻译",
+    "变量"
   ],
   "activationEvents": [
     "onCommand:extension.varTranslation"
@@ -52,16 +54,16 @@
           "type": "string",
           "enum": [
             "google",
-            "youdu",
+            "youdao",
             "baidu"
           ],
           "enumDescriptions": [
-            "谷歌",
-            "有道",
-            "百度"
+            "google",
+            "youdao",
+            "baidu"
           ],
           "default": "'google'",
-          "description": "翻译引擎"
+          "description": "translationEngine"
         }
       }
     }
