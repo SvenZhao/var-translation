@@ -53,11 +53,13 @@
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
+            "googleCN",
             "google",
             "youdao",
             "baidu"
           ],
           "enumDescriptions": [
+            "google中国",
             "google",
             "youdao",
             "baidu"
