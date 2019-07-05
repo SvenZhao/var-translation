@@ -2,6 +2,8 @@ import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, wo
 import { google, youdao, baidu } from 'translation.js';
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
 import { TranslateResult, StringOrTranslateOptions } from 'translation.js/declaration/api/types';
+const CONFIG = workspace.getConfiguration('varTranslation');
+const translationEngine: string = CONFIG.translationEngine;
 
 export function activate(context: ExtensionContext) {
 	const disposable = commands.registerCommand('extension.varTranslation', vscodeTranslate);
@@ -19,11 +21,12 @@ async function vscodeTranslate() {
 	if (!srcText) { return; }
 	try {
 		const engine = getTheTranslationEngine();
-		const lang = await engine.detect(srcText);
+		const lang = await determineLanguage(srcText, engine);
 		//非英语需要翻译
 		if (lang !== 'en') {
-			const translationResult: TranslateResult = await engine.translate({ text: srcText, from: lang, to: 'en' });
+			const translationResult: TranslateResult = await translate(engine, srcText, lang);
 			if (translationResult && translationResult.result) { srcText = translationResult.result[0]; }
+			console.log(translationResult);
 		}
 		const result = await Select(srcText);
 		if (!result) { return; }
@@ -51,15 +54,34 @@ async function Select(word: string): Promise<string | undefined> {
 	if (!selections) { return; }
 	return selections.label;
 }
+
+interface Engine {
+	detect(options: StringOrTranslateOptions): Promise<any>;
+	translate(options: StringOrTranslateOptions): Promise<any>;
+	audio(options: StringOrTranslateOptions): Promise<any>;
+}
 /**
  * 获取翻译引擎配置
  * @return 引擎
  */
 function getTheTranslationEngine() {
-	const CONFIG = workspace.getConfiguration('varTranslation');
-	const translationEngine = CONFIG.translationEngine;
-	if (translationEngine === 'google') { return google; }
-	if (translationEngine === 'youdao') { return youdao; }
-	if (translationEngine === 'baidu') { return baidu; }
-	return google;
+	let engine: Engine = google;
+	if (translationEngine === 'google') { engine = google; }
+	if (translationEngine === 'youdao') { engine = youdao; }
+	if (translationEngine === 'baidu') { engine = baidu; }
+	return engine;
+}
+/**
+ * 获取翻译引擎配置
+ * @return 引擎
+ */
+async function determineLanguage(srcText: string, engine: Engine) {
+	let lang: string;
+	if (translationEngine === 'google') { lang = await engine.detect({ text: srcText, com: true }); }
+	else { lang = await engine.detect(srcText); }
+	return lang;
+}
+async function translate(engine: Engine, srcText: string, lang: string) {
+	if (translationEngine === 'google') { return engine.translate({ text: srcText, from: lang, to: 'en', com: true }); }
+	return engine.translate({ text: srcText, from: lang, to: 'en' });
 }
