@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/SvenZhao/var-translation/compare/v0.4.2...v0.5.0) (2019-07-05)
+
+
+### Features
+
+* 区分谷歌中国 ([b492efd](https://github.com/SvenZhao/var-translation/commit/b492efd))
+
+
+
 ### [0.4.2](https://github.com/SvenZhao/var-translation/compare/v0.4.1...v0.4.2) (2019-07-04)
 
 
