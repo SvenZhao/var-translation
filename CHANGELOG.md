@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/SvenZhao/var-translation/compare/v0.6.1...v0.7.0) (2019-07-24)
+
+
+### Features
+
+* 加入英文快速判断 ([b5cb828](https://github.com/SvenZhao/var-translation/commit/b5cb828))
+
+
+
 ### [0.6.1](https://github.com/SvenZhao/var-translation/compare/v0.6.0...v0.6.1) (2019-07-24)
 
 ### Features
