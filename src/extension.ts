@@ -26,7 +26,6 @@ async function vscodeTranslate() {
 		if (lang !== 'en') {
 			const translationResult: TranslateResult = await translate(engine, srcText, lang);
 			if (translationResult && translationResult.result) { srcText = translationResult.result[0]; }
-			console.log(translationResult);
 		}
 		const result = await Select(srcText);
 		if (!result) { return; }
@@ -39,7 +38,7 @@ async function vscodeTranslate() {
 }
 /**
  * 用户选择选择转换形式
- * @param word 需要转换的单词 
+ * @param word 需要转换的单词
  * @return  用户选择
  */
 async function Select(word: string): Promise<string | undefined> {
