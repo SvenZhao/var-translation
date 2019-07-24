@@ -4,7 +4,7 @@
   "description": "Automatically translate words into English variable name",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "engines": {
     "vscode": "^1.23.0"
   },
