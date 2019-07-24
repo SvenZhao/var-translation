@@ -33,7 +33,7 @@ async function vscodeTranslate() {
 		editor.edit(builder => builder.replace(selection, result));
 	}
 	catch (err) {
-		window.showInformationMessage('some thing error; maybe Network Error');
+		window.showInformationMessage('some thing error; maybe Network Error;try change engine restart');
 	}
 }
 /**
@@ -71,12 +71,13 @@ function getTheTranslationEngine() {
 	return engine;
 }
 /**
- * 获取翻译引擎配置
- * @return 引擎
+ * 判断目标语言
  */
 async function determineLanguage(srcText: string, engine: Engine) {
 	let lang: string;
-	if (translationEngine === 'google') { lang = await engine.detect({ text: srcText, com: true }); }
+	//正则快速判断英文
+	if (/^[a-zA-Z\d\s\-\_]+$/.test(srcText)) { lang = 'en'; }
+	else if (translationEngine === 'google') { lang = await engine.detect({ text: srcText, com: true }); }
 	else { lang = await engine.detect(srcText); }
 	return lang;
 }
