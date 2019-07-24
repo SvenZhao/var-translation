@@ -4,26 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.6.1](https://github.com/SvenZhao/var-translation/compare/v0.6.0...v0.6.1) (2019-07-24)
 
-
-
-## [0.6.0](https://github.com/SvenZhao/var-translation/compare/v0.5.2...v0.6.0) (2019-07-24)
-
-
 ### Features
 
 * 更新依赖 ([f49c5be](https://github.com/SvenZhao/var-translation/commit/f49c5be))
-
-
-
-### [0.5.2](https://github.com/SvenZhao/var-translation/compare/v0.5.1...v0.5.2) (2019-07-05)
-
-
-
-### [0.5.1](https://github.com/SvenZhao/var-translation/compare/v0.5.0...v0.5.1) (2019-07-05)
-
-
-
-## [0.5.0](https://github.com/SvenZhao/var-translation/compare/v0.4.2...v0.5.0) (2019-07-05)
 
 
 ### Features
@@ -32,28 +15,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 
-### [0.4.2](https://github.com/SvenZhao/var-translation/compare/v0.4.1...v0.4.2) (2019-07-04)
-
-
-
-### [0.4.1](https://github.com/SvenZhao/var-translation/compare/v0.4.0...v0.4.1) (2019-07-04)
-
-
-
-## [0.4.0](https://github.com/SvenZhao/var-translation/compare/v0.3.1...v0.4.0) (2019-07-04)
-
-
 ### Features
 
 * 调整文档 修复有道 ([a61abeb](https://github.com/SvenZhao/var-translation/commit/a61abeb))
 
-
-
-### [0.3.1](https://github.com/SvenZhao/var-translation/compare/v0.3.0...v0.3.1) (2019-05-14)
-
-
-
-## [0.3.0](https://github.com/SvenZhao/var-translation/compare/v0.2.2...v0.3.0) (2019-05-14)
 
 
 ### Features
@@ -61,37 +26,9 @@ All notable changes to this project will be documented in this file. See [standa
 * 更新文档 ([7012ed2](https://github.com/SvenZhao/var-translation/commit/7012ed2))
 
 
-
-### [0.2.2](https://github.com/SvenZhao/var-translation/compare/v0.2.1...v0.2.2) (2019-05-13)
-
-
-
-### [0.2.1](https://github.com/SvenZhao/var-translation/compare/v0.2.0...v0.2.1) (2019-05-13)
-
-
-
-## [0.2.0](https://github.com/SvenZhao/var-translation/compare/v0.1.4...v0.2.0) (2019-05-13)
-
-
 ### Features
 
 * 加入右键菜单 ([38f83d0](https://github.com/SvenZhao/var-translation/commit/38f83d0))
-
-
-
-### [0.1.4](https://github.com/SvenZhao/var-translation/compare/v0.1.3...v0.1.4) (2019-05-13)
-
-
-
-### [0.1.3](https://github.com/SvenZhao/var-translation/compare/v0.1.2...v0.1.3) (2019-05-13)
-
-
-
-### [0.1.2](https://github.com/SvenZhao/var-translation/compare/v0.1.1...v0.1.2) (2019-05-13)
-
-
-
-### [0.1.1](https://github.com/SvenZhao/var-translation/compare/v0.1.0...v0.1.1) (2019-05-13)
 
 
 
