@@ -1,6 +1,6 @@
 {
-  "name": "var-translation",
-  "displayName": "var-translation",
+  "name": "var-translate",
+  "displayName": "var-translate",
   "description": "Automatically translate words into English variable name",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
@@ -15,6 +15,7 @@
     "translate",
     "variable",
     "camel",
+    "var",
     "翻译",
     "变量"
   ],
