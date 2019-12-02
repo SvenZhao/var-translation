@@ -1,10 +1,10 @@
 {
-  "name": "var-translate",
+  "name": "var-translation",
   "displayName": "var-translate",
   "description": "Automatically translate words into English variable name",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "engines": {
     "vscode": "^1.23.0"
   },
