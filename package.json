@@ -4,7 +4,7 @@
   "description": "Automatically translate words into English variable name",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "engines": {
     "vscode": "^1.23.0"
   },
@@ -72,7 +72,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run release && npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",

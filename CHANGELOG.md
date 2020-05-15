@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.3](https://github.com/SvenZhao/var-translation/compare/v0.7.2...v0.7.3) (2020-05-15)
+
+
+### Bug Fixes
+
+* 修正引擎切换失败 ([0e7e234](https://github.com/SvenZhao/var-translation/commit/0e7e234))
+
+
+
 ### [0.7.2](https://github.com/SvenZhao/var-translation/compare/v0.7.1...v0.7.2) (2019-12-02)
 
 
