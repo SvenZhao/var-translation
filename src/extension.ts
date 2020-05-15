@@ -42,7 +42,7 @@ async function vscodeTranslate() {
     //替换文案
     editor.edit((builder) => builder.replace(selection, result));
   } catch (err) {
-    window.showInformationMessage('some thing error; maybe Network Error;try change engine restart');
+    window.showInformationMessage(`出错了设置切换一下引擎,当前的引擎是${translationEngine}`);
   }
 }
 /**
@@ -76,7 +76,6 @@ interface Engine {
  */
 function getTheTranslationEngine() {
   let engine: Engine = google;
-  console.log('translationEngine', translationEngine);
   if (translationEngine === 'google') {
     engine = google;
   }
