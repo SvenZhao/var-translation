@@ -4,7 +4,7 @@
   "description": "使用翻译api将其他语言到英文,转换成常见的变量命名形式",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "engines": {
     "vscode": "^1.23.0"
   },
