@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.12.0](https://github.com/SvenZhao/var-translation/compare/v0.11.2...v0.12.0) (2020-10-27)
+
+
+### Features
+
+* 更新翻译引擎 ([7769c09](https://github.com/SvenZhao/var-translation/commit/7769c09))
+
+
+
 ### [0.11.2](https://github.com/SvenZhao/var-translation/compare/v0.11.1...v0.11.2) (2020-10-27)
 
 
