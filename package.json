@@ -82,7 +82,7 @@
   "devDependencies": {
     "@types/mocha": "^2.2.42",
     "@types/node": "^10.12.21",
-    "standard-version": "^6.0.1",
+    "standard-version": "^8.0.1",
     "tslint": "^5.12.1",
     "typescript": "^3.3.1",
     "vscode": "^1.1.28"
