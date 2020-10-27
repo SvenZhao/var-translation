@@ -1,5 +1,5 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
-import { google, youdao, baidu } from 'translation-api';
+import { google, youdao, baidu } from 'translation.js';
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
 
 let translationEngine: string = 'google';
