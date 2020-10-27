@@ -1,7 +1,6 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
 import { google, youdao, baidu } from 'translation-api';
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
-import { TranslateResult, StringOrTranslateOptions } from 'translation.js/declaration/api/types';
 
 let translationEngine: string = 'google';
 
@@ -30,7 +29,7 @@ async function vscodeTranslate() {
     const lang = await determineLanguage(srcText, engine);
     //非英语需要翻译
     if (lang !== 'en') {
-      const translationResult: TranslateResult = await translate(engine, srcText, lang);
+      const translationResult: any = await translate(engine, srcText, lang);
       if (translationResult && translationResult.result) {
         srcText = translationResult.result[0];
       }
@@ -66,9 +65,9 @@ async function Select(word: string): Promise<string | undefined> {
 }
 
 interface Engine {
-  detect(options: StringOrTranslateOptions): Promise<any>;
-  translate(options: StringOrTranslateOptions): Promise<any>;
-  audio(options: StringOrTranslateOptions): Promise<any>;
+  detect(options: any): Promise<any>;
+  translate(options: any): Promise<any>;
+  audio(options: any): Promise<any>;
 }
 /**
  * 获取翻译引擎配置
