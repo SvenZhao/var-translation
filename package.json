@@ -60,12 +60,12 @@
             "baidu"
           ],
           "enumDescriptions": [
-            "google中国",
-            "google",
-            "youdao",
-            "baidu"
+            "谷歌中国",
+            "谷歌",
+            "有道",
+            "百度(会抽风)"
           ],
-          "default": "'google'",
+          "default": "'googleCN'",
           "description": "translationEngine"
         }
       }
