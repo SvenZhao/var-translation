@@ -15,34 +15,22 @@ async function vscodeTranslate() {
   translationEngine = CONFIG.translationEngine;
   //获取编辑器
   const editor = window.activeTextEditor;
-  if (!editor) {
-    return;
-  }
+  if (!editor) return;
+
   //获取选中文字
   const selection = editor.selection;
   let srcText = editor.document.getText(selection);
-  if (!srcText) {
-    return;
-  }
-  try {
-    const engine = getTheTranslationEngine();
-    const lang = await determineLanguage(srcText, engine);
-    //非英语需要翻译
-    if (lang !== 'en') {
-      const translationResult: any = await translate(engine, srcText, lang);
-      if (translationResult && translationResult.result) {
-        srcText = translationResult.result[0];
-      }
-    }
-    const result = await Select(srcText);
-    if (!result) {
-      return;
-    }
-    //替换文案
-    editor.edit((builder) => builder.replace(selection, result));
-  } catch (err) {
-    window.showInformationMessage(`出错了设置切换一下引擎,当前的引擎是${translationEngine}`);
-  }
+  const engine = getTheTranslationEngine();
+  const lang = await determineLanguage(srcText, engine);
+  //非英语需要翻译
+  if (lang !== 'en') srcText = await getTranslateResult(engine, srcText, lang);
+  console.log('srcText', srcText);
+  if (!srcText) return;
+
+  const result = await Select(srcText);
+  if (!result) return;
+  //替换文案
+  editor.edit((builder) => builder.replace(selection, result));
 }
 /**
  * 用户选择选择转换形式
@@ -84,26 +72,37 @@ function getTheTranslationEngine() {
   if (translationEngine === 'baidu') {
     engine = baidu;
   }
+  console.log('获取引擎:', translationEngine);
   return engine;
 }
 /**
  * 判断目标语言
  */
 async function determineLanguage(srcText: string, engine: Engine) {
-  let lang: string;
+  let lang = 'en';
   //正则快速判断英文
-  if (/^[a-zA-Z\d\s\-\_]+$/.test(srcText)) {
-    lang = 'en';
-  } else if (translationEngine === 'google') {
-    lang = await engine.detect({ text: srcText, com: true });
-  } else {
-    lang = await engine.detect(srcText);
+  if (/^[a-zA-Z\d\s\-\_]+$/.test(srcText)) return lang;
+  try {
+    const com = translationEngine === 'google';
+    lang = await engine.detect({ text: srcText, com });
+    console.log('判断语言成功:', lang);
+  } catch (error) {
+    console.log(error);
+    window.showInformationMessage(`引擎:${translationEngine}异常,源语言判断失败 请检查网络重启 或 切换引擎试试`);
   }
   return lang;
 }
-async function translate(engine: Engine, srcText: string, lang: string) {
-  if (translationEngine === 'google') {
-    return engine.translate({ text: srcText, from: lang, to: 'en', com: true });
+async function getTranslateResult(engine: Engine, srcText: string, lang: string) {
+  try {
+    let translationResult = null;
+    const com = translationEngine === 'google';
+    translationResult = await engine.translate({ text: srcText, from: lang, to: 'en', com });
+    if (translationResult && translationResult.result) {
+      return translationResult.result[0];
+    }
+  } catch (error) {
+    console.log(error);
+    window.showInformationMessage(`引擎:${translationEngine}异常,翻译失败 请检查网络重启 或 切换引擎试试`);
+    return null;
   }
-  return engine.translate({ text: srcText, from: lang, to: 'en' });
 }
