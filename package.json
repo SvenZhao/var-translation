@@ -54,18 +54,12 @@
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
-            "googleCN",
-            "google",
-            "youdao",
-            "baidu"
+            "google"
           ],
           "enumDescriptions": [
-            "谷歌中国",
-            "谷歌",
-            "有道",
-            "百度(会抽风)"
+            "谷歌"
           ],
-          "default": "'googleCN'",
+          "default": "'google'",
           "description": "translationEngine"
         }
       }
@@ -82,6 +76,7 @@
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
+    "@types/google-translate-api": "^2.3.1",
     "@types/mocha": "^8.0.0",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.50.0",
@@ -98,7 +93,7 @@
   },
   "dependencies": {
     "change-case": "^3.1.0",
-    "translation.js": "^0.7.15"
+    "google-translate-api": "^2.3.0"
   },
   "repository": {
     "type": "git",
