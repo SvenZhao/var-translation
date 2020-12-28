@@ -12,7 +12,5 @@ Automatically translate words into English variable name
 ![feature X](images/vscode1.gif)
 
 
-# TranslationEngine default Google(翻译引擎 默认谷歌中国)
-![feature X](images/setting.png)
-
+## 因为免费翻译引擎api不稳定 现在统一使用谷歌的翻译引擎 可能会慢点 后续有时间再想办法继承其他的引擎
 
