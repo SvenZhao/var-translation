@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.6](https://github.com/SvenZhao/var-translation/compare/v0.13.5...v0.13.6) (2020-12-28)
+
+
+### Features
+
+* 更新readme ([d963256](https://github.com/SvenZhao/var-translation/commit/d96325627bf357da021752629ca8d085c64696be))
+* 替换新的谷歌无限制翻译引擎 ([68fe9b4](https://github.com/SvenZhao/var-translation/commit/68fe9b4859537c6f79228634b4c74bd15a2050bd))
+
 ### [0.13.5](https://github.com/SvenZhao/var-translation/compare/v0.13.3...v0.13.5) (2020-10-30)
 
 
