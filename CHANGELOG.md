@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.8](https://github.com/SvenZhao/var-translation/compare/v0.13.7...v0.13.8) (2020-12-30)
+
+
+### Features
+
+* 升级webpack ([85f5375](https://github.com/SvenZhao/var-translation/commit/85f537536beb59eed216fef925c519efd9084297))
+
 ### [0.13.7](https://github.com/SvenZhao/var-translation/compare/v0.13.6...v0.13.7) (2020-12-28)
 
 ### [0.13.6](https://github.com/SvenZhao/var-translation/compare/v0.13.5...v0.13.6) (2020-12-28)

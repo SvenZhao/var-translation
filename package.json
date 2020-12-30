@@ -4,7 +4,7 @@
   "description": "纠结怎么取变量? 中文一键翻译转换成常用大小驼峰等格式",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.13.7",
+  "version": "0.13.8",
   "engines": {
     "vscode": "^1.52.0"
   },
@@ -66,7 +66,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run package",
+    "vscode:prepublish": "npm run release && npm run package",
     "compile": "webpack --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
     "watch": "webpack --watch --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
     "package": "webpack --mode production --config ./build/node-extension.webpack.config.js",
@@ -74,7 +74,8 @@
     "test-watch": "tsc -watch -p ./",
     "pretest": "npm run test-compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "release": "standard-version"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
@@ -87,6 +88,7 @@
     "eslint": "^7.15.0",
     "glob": "^7.1.6",
     "mocha": "^8.1.3",
+    "standard-version": "^9.1.0",
     "ts-loader": "^8.0.11",
     "typescript": "^4.1.2",
     "vscode-test": "^1.4.1",
