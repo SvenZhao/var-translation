@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions } from 'vscode';
-const google = require('google-translate-api');
+import google from 'google-translate-api';
 
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
 export function activate(context: ExtensionContext) {
@@ -23,18 +23,21 @@ async function vscodeSelect(word: string): Promise<string | undefined> {
   items.push({ label: paramCase(word), description: 'paramCase 中划线' });
   items.push({ label: constantCase(word), description: 'constantCase 常量' });
   const selections = await window.showQuickPick(items, opts);
-  if (!selections) return;
+  if (!selections) {
+    return;
+  }
   return selections.label;
 }
 
 async function getTranslateResult(srcText: string) {
   // 正则快速判断英文
-  if (/^[a-zA-Z\d\s\-_]+$/.test(srcText)) return srcText;
+  if (/^[a-zA-Z\d\s\-_]+$/.test(srcText)) {
+    return srcText;
+  }
   try {
     const res = await google(srcText, { to: 'en' });
     return res.text;
   } catch (error) {
-    console.log(error);
     window.showInformationMessage(`引擎异常,翻译失败 请检查网络重启 或 切换引擎试试 ${JSON.stringify(error)}`);
     return null;
   }
@@ -42,17 +45,23 @@ async function getTranslateResult(srcText: string) {
 async function main() {
   // 获取编辑器
   const editor = window.activeTextEditor;
-  if (!editor) return;
+  if (!editor) {
+    return;
+  }
   // 获取选中文字
   const { selection } = editor;
   const selected = editor.document.getText(selection);
   // 获取翻译结果
   const translated = await getTranslateResult(selected);
-  if (!translated) return;
+  if (!translated) {
+    return;
+  }
   // 组装选项
   const userSelected = await vscodeSelect(translated);
   // 用户选中
-  if (!userSelected) return;
+  if (!userSelected) {
+    return;
+  }
   // 替换文案
   editor.edit((builder) => builder.replace(selection, userSelected));
 }

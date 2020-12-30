@@ -1,5 +1,4 @@
 {
-    "extends": "eslint-config-ali/typescript",
     "root": true,
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
