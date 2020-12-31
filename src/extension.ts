@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
-
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions } from 'vscode';
-import google from 'google-translate-api';
+const google = require('google-translate-cn');
 
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
 export function activate(context: ExtensionContext) {
@@ -38,7 +36,7 @@ async function getTranslateResult(srcText: string) {
     const res = await google(srcText, { to: 'en' });
     return res.text;
   } catch (error) {
-    window.showInformationMessage(`引擎异常,翻译失败 请检查网络重启 或 切换引擎试试 ${JSON.stringify(error)}`);
+    window.showInformationMessage(`引擎异常,翻译失败 请检查网络重启  ${JSON.stringify(error)}`);
     return null;
   }
 }

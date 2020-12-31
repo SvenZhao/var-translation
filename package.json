@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "change-case": "^4.1.2",
-    "google-translate-api": "^2.3.0"
+    "google-translate-cn": "^1.0.0"
   },
   "repository": {
     "type": "git",
