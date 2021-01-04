@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.15](https://github.com/SvenZhao/var-translation/compare/v0.13.14...v0.13.15) (2021-01-04)
+
+
+### Features
+
+* 新增谷歌国内 国外选项 常识修复403code 问题 ([6b9f4f5](https://github.com/SvenZhao/var-translation/commit/6b9f4f59472c41470a35e089b8a20e582bd786d6))
+
 ### [0.13.14](https://github.com/SvenZhao/var-translation/compare/v0.13.13...v0.13.14) (2020-12-31)
 
 ### [0.13.13](https://github.com/SvenZhao/var-translation/compare/v0.13.12...v0.13.13) (2020-12-30)
