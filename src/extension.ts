@@ -1,5 +1,6 @@
-import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions } from 'vscode';
-const google = require('google-translate-cn');
+import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
+
+const translate = require('@vitalets/google-translate-api');
 
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
 export function activate(context: ExtensionContext) {
@@ -28,12 +29,16 @@ async function vscodeSelect(word: string): Promise<string | undefined> {
 }
 
 async function getTranslateResult(srcText: string) {
+  const CONFIG = workspace.getConfiguration('varTranslation');
+  const translationEngine = CONFIG.translationEngine;
+  const tld = translationEngine === 'google' ? 'com' : 'cn';
   // 正则快速判断英文
   if (/^[a-zA-Z\d\s\-_]+$/.test(srcText)) {
     return srcText;
   }
   try {
-    const res = await google(srcText, { to: 'en' });
+    console.log(`使用${translationEngine}翻译内容:${srcText}`);
+    const res = await translate(srcText, { to: 'en', tld });
     return res.text;
   } catch (error) {
     window.showInformationMessage(`引擎异常,翻译失败 请检查网络重启  ${JSON.stringify(error)}`);
