@@ -1,6 +1,6 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
 
-const translate = require('@vitalets/google-translate-api');
+const translatePlatforms = require('translate-platforms');
 
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
 export function activate(context: ExtensionContext) {
@@ -28,20 +28,24 @@ async function vscodeSelect(word: string): Promise<string | undefined> {
   return selections.label;
 }
 
+/**
+ * 获取翻译引起
+ */
 async function getTranslateResult(srcText: string) {
-  const CONFIG = workspace.getConfiguration('varTranslation');
-  const translationEngine = CONFIG.translationEngine;
-  const tld = translationEngine === 'google' ? 'com' : 'cn';
+  const engine = workspace.getConfiguration('varTranslation').translationEngine;
+  const translate = translatePlatforms[engine] || translatePlatforms.google;
   // 正则快速判断英文
   if (/^[a-zA-Z\d\s\-_]+$/.test(srcText)) {
     return srcText;
   }
   try {
-    console.log(`使用${translationEngine}翻译内容:${srcText}`);
-    const res = await translate(srcText, { to: 'en', tld });
+    console.log(`使用${engine}翻译内容:${srcText}`);
+    const res = await translate(srcText, { to: 'en' });
+    console.log('res',res);
     return res.text;
   } catch (error) {
-    window.showInformationMessage(`引擎异常,翻译失败 请检查网络重启  ${JSON.stringify(error)}`);
+    console.error(error);
+    window.showInformationMessage(`${engine}翻译异常,请检查网络或稍后重试 ${JSON.stringify(error)}`);
     return null;
   }
 }
