@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.16](https://github.com/SvenZhao/var-translation/compare/v0.13.15...v0.13.16) (2021-01-07)
+
+
+### Features
+
+* 支持微软翻译 ([db9850e](https://github.com/SvenZhao/var-translation/commit/db9850e16c23a88e1a5333117bc8be5442822a0b))
+
 ### [0.13.15](https://github.com/SvenZhao/var-translation/compare/v0.13.14...v0.13.15) (2021-01-04)
 
 
