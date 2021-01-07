@@ -56,16 +56,14 @@
           "enum": [
             "google",
             "microsoft",
-            "tencent",
             "yandex",
             "baidu"
           ],
           "enumDescriptions": [
             "谷歌中国",
             "微软",
-            "腾讯",
-            "yandex",
-            "百度"
+            "yandex(慢)",
+            "百度(抽风)"
           ],
           "default": "'google'",
           "description": "translationEngine"
