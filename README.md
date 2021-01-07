@@ -1,7 +1,7 @@
 # [驼峰翻译助手](https://marketplace.visualstudio.com/items?itemName=svenzhao.var-translation)
 
 ```
-因免费翻译引擎api不稳定 现在统一使用新谷歌的翻译引擎vitalets/google-translate-api 可能会慢点 后续有时间再想办法实现其他引擎 
+新增微软翻译 默认使用谷歌
 有问题直接报issue 
 本地环境无法复现403  已经尝试修复 希望还有问题的朋友能提供更多的异常信息
 ```

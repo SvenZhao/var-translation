@@ -55,11 +55,17 @@
           "type": "string",
           "enum": [
             "google",
-            "microsoft"
+            "microsoft",
+            "tencent",
+            "yandex",
+            "baidu"
           ],
           "enumDescriptions": [
             "谷歌中国",
-            "微软"
+            "微软",
+            "腾讯",
+            "yandex",
+            "百度"
           ],
           "default": "'google'",
           "description": "translationEngine"
