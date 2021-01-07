@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.18](https://github.com/SvenZhao/var-translation/compare/v0.13.17...v0.13.18) (2021-01-07)
+
+
+### Features
+
+* 新增引擎 ([efaa861](https://github.com/SvenZhao/var-translation/commit/efaa861c7dc1d3b72f9c69be5cc6eda461807d98))
+
 ### [0.13.17](https://github.com/SvenZhao/var-translation/compare/v0.13.16...v0.13.17) (2021-01-07)
 
 
