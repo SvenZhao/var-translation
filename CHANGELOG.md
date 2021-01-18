@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.19](https://github.com/SvenZhao/var-translation/compare/v0.13.18...v0.13.19) (2021-01-18)
+
+
+### Features
+
+* 优化新增多重分词类型 ([6517991](https://github.com/SvenZhao/var-translation/commit/651799154dede59ead4447ab1d23915457754ce6))
+
 ### [0.13.18](https://github.com/SvenZhao/var-translation/compare/v0.13.17...v0.13.18) (2021-01-07)
 
 
