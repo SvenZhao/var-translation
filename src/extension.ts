@@ -2,7 +2,7 @@ import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, wo
 
 const translatePlatforms = require('translate-platforms');
 
-import { camelCase, paramCase, pascalCase, snakeCase, constantCase } from 'change-case';
+import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
 export function activate(context: ExtensionContext) {
   const disposable = commands.registerCommand('extension.varTranslation', main);
   context.subscriptions.push(disposable);
@@ -14,13 +14,19 @@ export function deactivate() {}
  * @return  用户选择
  */
 async function vscodeSelect(word: string): Promise<string | undefined> {
-  const items: QuickPickItem[] = [];
+  const items: QuickPickItem[] = [
+    { label: (word), description: 'camelCase 驼峰(小)' },
+    { label: pascalCase(word), description: 'pascalCase 驼峰(大)' },
+    { label: snakeCase(word), description: 'snakeCase 下划线' },
+    { label: paramCase(word), description: 'paramCase 中划线(小)' },
+    { label: headerCase(word), description: 'headerCase 中划线(大)' },
+    { label: noCase(word), description: 'noCase 分词(小)' },
+    { label: capitalCase(word), description: 'capitalCase 分词(大)' },
+    { label: dotCase(word), description: 'dotCase 对象属性' },
+    { label: pathCase(word), description: 'pathCase 文件路径' },
+    { label: constantCase(word), description: 'constantCase 常量' },
+  ];
   const opts: QuickPickOptions = { matchOnDescription: true, placeHolder: 'choose replace 选择替换' };
-  items.push({ label: camelCase(word), description: 'camelCase 小驼峰' });
-  items.push({ label: pascalCase(word), description: 'pascalCase 大驼峰' });
-  items.push({ label: snakeCase(word), description: 'snakeCase 下划线' });
-  items.push({ label: paramCase(word), description: 'paramCase 中划线' });
-  items.push({ label: constantCase(word), description: 'constantCase 常量' });
   const selections = await window.showQuickPick(items, opts);
   if (!selections) {
     return;
@@ -41,7 +47,7 @@ async function getTranslateResult(srcText: string) {
   try {
     console.log(`使用${engine}翻译内容:${srcText}`);
     const res = await translate(srcText, { to: 'en' });
-    console.log('res',res);
+    console.log('res', res);
     return res.text;
   } catch (error) {
     console.error(error);

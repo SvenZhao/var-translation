@@ -1,9 +1,8 @@
 # [驼峰翻译助手](https://marketplace.visualstudio.com/items?itemName=svenzhao.var-translation)
 
 ```
-新增微软翻译 默认使用谷歌
+更新请查看Changelog
 有问题直接报issue 
-本地环境无法复现403  已经尝试修复 希望还有问题的朋友能提供更多的异常信息
 ```
 ---
  ## 英文不好 写代起变量时候 你是否一直这样干?
