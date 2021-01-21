@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.20](https://github.com/SvenZhao/var-translation/compare/v0.13.19...v0.13.20) (2021-01-21)
+
+
+### Bug Fixes
+
+* 修正小驼峰转换 ([ce88a08](https://github.com/SvenZhao/var-translation/commit/ce88a08f2c59e50c6d0b68d10afab40f202ddba9))
+
 ### [0.13.19](https://github.com/SvenZhao/var-translation/compare/v0.13.18...v0.13.19) (2021-01-18)
 
 
