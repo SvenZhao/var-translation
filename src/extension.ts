@@ -15,7 +15,7 @@ export function deactivate() {}
  */
 async function vscodeSelect(word: string): Promise<string | undefined> {
   const items: QuickPickItem[] = [
-    { label: (word), description: 'camelCase 驼峰(小)' },
+    { label: camelCase(word), description: 'camelCase 驼峰(小)' },
     { label: pascalCase(word), description: 'pascalCase 驼峰(大)' },
     { label: snakeCase(word), description: 'snakeCase 下划线' },
     { label: paramCase(word), description: 'paramCase 中划线(小)' },
