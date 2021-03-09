@@ -21,4 +21,7 @@
  ## 快捷键  
     win: "Alt+shift+t" 
     mac": "cmd+shift+t"
+    
+ ## 支持的翻译引擎
+    谷歌 微软 有道 百度
  
