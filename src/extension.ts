@@ -1,10 +1,21 @@
-import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
+import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from "vscode";
 
-const translatePlatforms = require('translate-platforms');
+const translatePlatforms = require("translate-platforms");
 
-import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
+import {
+  camelCase,
+  paramCase,
+  pascalCase,
+  snakeCase,
+  constantCase,
+  capitalCase,
+  dotCase,
+  headerCase,
+  noCase,
+  pathCase,
+} from "change-case";
 export function activate(context: ExtensionContext) {
-  const disposable = commands.registerCommand('extension.varTranslation', main);
+  const disposable = commands.registerCommand("extension.varTranslation", main);
   context.subscriptions.push(disposable);
 }
 export function deactivate() {}
@@ -15,18 +26,18 @@ export function deactivate() {}
  */
 async function vscodeSelect(word: string): Promise<string | undefined> {
   const items: QuickPickItem[] = [
-    { label: camelCase(word), description: 'camelCase 驼峰(小)' },
-    { label: pascalCase(word), description: 'pascalCase 驼峰(大)' },
-    { label: snakeCase(word), description: 'snakeCase 下划线' },
-    { label: paramCase(word), description: 'paramCase 中划线(小)' },
-    { label: headerCase(word), description: 'headerCase 中划线(大)' },
-    { label: noCase(word), description: 'noCase 分词(小)' },
-    { label: capitalCase(word), description: 'capitalCase 分词(大)' },
-    { label: dotCase(word), description: 'dotCase 对象属性' },
-    { label: pathCase(word), description: 'pathCase 文件路径' },
-    { label: constantCase(word), description: 'constantCase 常量' },
+    { label: camelCase(word), description: "camelCase 驼峰(小)" },
+    { label: pascalCase(word), description: "pascalCase 驼峰(大)" },
+    { label: snakeCase(word), description: "snakeCase 下划线" },
+    { label: paramCase(word), description: "paramCase 中划线(小)" },
+    { label: headerCase(word), description: "headerCase 中划线(大)" },
+    { label: noCase(word), description: "noCase 分词(小)" },
+    { label: capitalCase(word), description: "capitalCase 分词(大)" },
+    { label: dotCase(word), description: "dotCase 对象属性" },
+    { label: pathCase(word), description: "pathCase 文件路径" },
+    { label: constantCase(word), description: "constantCase 常量" },
   ];
-  const opts: QuickPickOptions = { matchOnDescription: true, placeHolder: 'choose replace 选择替换' };
+  const opts: QuickPickOptions = { matchOnDescription: true, placeHolder: "choose replace 选择替换" };
   const selections = await window.showQuickPick(items, opts);
   if (!selections) {
     return;
@@ -38,16 +49,16 @@ async function vscodeSelect(word: string): Promise<string | undefined> {
  * 获取翻译引起
  */
 async function getTranslateResult(srcText: string) {
-  const engine = workspace.getConfiguration('varTranslation').translationEngine;
+  const engine = workspace.getConfiguration("varTranslation").translationEngine;
   const translate = translatePlatforms[engine] || translatePlatforms.google;
   // 正则快速判断英文
-  if (/^[a-zA-Z\d\s\-_]+$/.test(srcText)) {
+  if (/^[a-zA-Z\d\s\/\-\._]+$/.test(srcText)) {
     return srcText;
   }
   try {
     console.log(`使用${engine}翻译内容:${srcText}`);
-    const res = await translate(srcText, { to: 'en' });
-    console.log('res', res);
+    const res = await translate(srcText, { to: "en" });
+    console.log("res", res);
     return res.text;
   } catch (error) {
     console.error(error);
