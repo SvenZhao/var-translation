@@ -1,6 +1,6 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from "vscode";
 
-const translatePlatforms = require("translate-platforms");
+const translatePlatforms = require("./inc/translate");
 
 import {
   camelCase,

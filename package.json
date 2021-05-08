@@ -56,12 +56,14 @@
           "enum": [
             "google",
             "microsoft",
+            "youdao",
             "yandex",
             "baidu"
           ],
           "enumDescriptions": [
             "谷歌中国",
             "微软",
+            "有道",
             "yandex(慢)",
             "百度(抽风)"
           ],
@@ -103,7 +105,7 @@
   },
   "dependencies": {
     "change-case": "^4.1.2",
-    "translate-platforms": "0.0.7"
+    "got": "^11.8.2"
   },
   "repository": {
     "type": "git",
