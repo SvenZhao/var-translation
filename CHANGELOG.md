@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.23](https://github.com/SvenZhao/var-translation/compare/v0.13.22...v0.13.23) (2021-05-08)
+
+
+### Features
+
+* 上线有道翻译 ([285e3a3](https://github.com/SvenZhao/var-translation/commit/285e3a37628854df80ea99834d35c538c46dcc50))
+
 ### 0.13.22 (2021-04-15)
 
 
