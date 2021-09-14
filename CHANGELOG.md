@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.26](https://github.com/SvenZhao/var-translation/compare/v0.13.25...v0.13.26) (2021-09-14)
+
 ### [0.13.25](https://github.com/SvenZhao/var-translation/compare/v0.13.23...v0.13.25) (2021-09-14)
 
 
