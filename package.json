@@ -105,7 +105,8 @@
   },
   "dependencies": {
     "change-case": "^4.1.2",
-    "got": "^11.8.2"
+    "got": "^11.8.2",
+    "tough-cookie": "^4.0.0"
   },
   "repository": {
     "type": "git",
