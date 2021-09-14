@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.24](https://github.com/SvenZhao/var-translation/compare/v0.13.23...v0.13.24) (2021-09-14)
+
+
+### Features
+
+* 补充依赖 ([af28330](https://github.com/SvenZhao/var-translation/commit/af28330517574692f43d85434cd9ffaf4ff3a67c))
+
 ### [0.13.23](https://github.com/SvenZhao/var-translation/compare/v0.13.22...v0.13.23) (2021-05-08)
 
 
