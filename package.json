@@ -74,7 +74,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run release && npm run package",
+    "vscode:prepublish": "npm run package",
     "compile": "webpack --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
     "watch": "webpack --watch --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
     "package": "webpack --mode production --config ./build/node-extension.webpack.config.js",
