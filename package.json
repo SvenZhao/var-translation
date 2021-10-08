@@ -55,20 +55,14 @@
           "type": "string",
           "enum": [
             "google",
-            "microsoft",
-            "youdao",
-            "yandex",
-            "baidu"
+            "bing"
           ],
           "enumDescriptions": [
             "谷歌中国",
-            "微软",
-            "有道",
-            "yandex(慢)",
-            "百度(抽风)"
+            "必应"
           ],
           "default": "google",
-          "description": "translationEngine"
+          "description": "翻译引擎"
         }
       }
     }
@@ -83,7 +77,8 @@
     "pretest": "npm run test-compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
-    "release": "standard-version"
+    "release": "standard-version",
+    "publish": "npm run release && vsce publish"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
@@ -104,6 +99,8 @@
     "webpack-cli": "^4.2.0"
   },
   "dependencies": {
+    "@asmagin/google-translate-api": "^8.0.2",
+    "bing-translate-api": "^2.2.1",
     "change-case": "^4.1.2",
     "got": "^11.8.2",
     "tough-cookie": "^4.0.0"

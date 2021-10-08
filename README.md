@@ -1,9 +1,15 @@
 # [驼峰翻译助手](https://marketplace.visualstudio.com/items?itemName=svenzhao.var-translation)
 
 ```
-更新请查看Changelog
-有问题直接报issue 
+因为翻译是通过爬虫实现的 某些情况下发出的请求会被翻译源识别为爬虫阻止
+紧急调整两个翻译渠道 
+分别是谷歌和必应
+可以在插件配置中Translation Engine中切换
+
+
+后续可能会通过申请key的方式接入官方的jsdk
 ```
+[有问题直接报issue](https://github.com/SvenZhao/var-translation/issues) 
 ---
  ## 英文不好 写代起变量时候 你是否一直这样干?
  - 打开翻软件

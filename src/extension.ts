@@ -1,6 +1,5 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from "vscode";
-
-const translatePlatforms = require("./inc/translate");
+import translatePlatforms, { EengineType } from "./inc/translate";
 
 import {
   camelCase,
@@ -48,8 +47,9 @@ async function vscodeSelect(word: string): Promise<string | undefined> {
 /**
  * 获取翻译引起
  */
+
 async function getTranslateResult(srcText: string) {
-  const engine = workspace.getConfiguration("varTranslation").translationEngine;
+  const engine: EengineType = workspace.getConfiguration("varTranslation").translationEngine;
   const translate = translatePlatforms[engine] || translatePlatforms.google;
   // 正则快速判断英文
   if (/^[a-zA-Z\d\s\/\-\._]+$/.test(srcText)) {
