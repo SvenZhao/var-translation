@@ -18,7 +18,7 @@ export function activate(context: ExtensionContext) {
   const disposable = commands.registerCommand("extension.varTranslation", main);
   context.subscriptions.push(disposable);
 }
-export function deactivate() {}
+export function deactivate() { }
 /**
  * 用户选择选择转换形式
  * @param word 需要转换的单词
@@ -73,19 +73,31 @@ async function main() {
     return;
   }
   // 获取选中文字
-  const { selection } = editor;
-  const selected = editor.document.getText(selection);
-  // 获取翻译结果
-  const translated = await getTranslateResult(selected);
-  if (!translated) {
-    return;
+  const { selections } = editor;
+  const selecttionMap = new Map();
+  // 多选每个结果储存到字典
+  for (let i = 0; i < selections.length; i++) {
+    const item = selections[i];
+    const itemText = editor.document.getText(item);
+    if (!selecttionMap.has(itemText)) {
+      // 获取翻译结果
+      const translated = await getTranslateResult(itemText);
+      // 组装选项
+      const userSelected = await vscodeSelect(translated);
+      // 储存到Map
+      if (userSelected) {
+        selecttionMap.set(itemText, userSelected);
+      }
+    }
   }
-  // 组装选项
-  const userSelected = await vscodeSelect(translated);
-  // 用户选中
-  if (!userSelected) {
-    return;
-  }
-  // 替换文案
-  editor.edit((builder) => builder.replace(selection, userSelected));
+  // 编辑
+  editor.edit((builder) => {
+    // 替换文案
+    selections.forEach((item) => {
+      const itemText = editor.document.getText(item);
+      if (selecttionMap.has(itemText)) {
+        builder.replace(item, selecttionMap.get(itemText));
+      }
+    });
+  });
 }
