@@ -73,19 +73,21 @@ async function main() {
     return;
   }
   // 获取选中文字
-  const { selection } = editor;
-  const selected = editor.document.getText(selection);
-  // 获取翻译结果
-  const translated = await getTranslateResult(selected);
-  if (!translated) {
-    return;
+  const { selections } = editor;
+  for (const selection of selections) {
+    const selected = editor.document.getText(selection);
+    // 获取翻译结果
+    const translated = await getTranslateResult(selected);
+    if (!translated) {
+      return;
+    }
+    // 组装选项
+    const userSelected = await vscodeSelect(translated);
+    // 用户选中
+    if (!userSelected) {
+      return;
+    }
+    // 替换文案
+    editor.edit((builder) => builder.replace(selection, userSelected));
   }
-  // 组装选项
-  const userSelected = await vscodeSelect(translated);
-  // 用户选中
-  if (!userSelected) {
-    return;
-  }
-  // 替换文案
-  editor.edit((builder) => builder.replace(selection, userSelected));
 }
