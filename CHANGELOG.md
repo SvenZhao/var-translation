@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.34](https://github.com/SvenZhao/var-translation/compare/v0.13.33...v0.13.34) (2022-03-21)
+
+
+### Features
+
+* read ([9e28b01](https://github.com/SvenZhao/var-translation/commit/9e28b01eb50b474c587b645da1acce1cc4e836cf))
+* 新增多行选择翻译 ([e942063](https://github.com/SvenZhao/var-translation/commit/e9420638ee306a015a390d0d2a418a3bd398e84d))
+
 ### [0.13.33](https://github.com/SvenZhao/var-translation/compare/v0.13.32...v0.13.33) (2021-10-08)
 
 
