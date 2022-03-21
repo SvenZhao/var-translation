@@ -7,8 +7,17 @@
 可以在插件配置中Translation Engine中切换
 
 
+
 后续可能会通过申请key的方式接入官方的jsdk
 ```
+
+
+ ## 新增
+```
+  文案多选时可以依次翻译
+```
+
+
 [有问题直接报issue](https://github.com/SvenZhao/var-translation/issues) 
 ---
  ## 英文不好 写代起变量时候 你是否一直这样干?
