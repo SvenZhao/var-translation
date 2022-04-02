@@ -1,6 +1,6 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from "vscode";
 import translatePlatforms, { EengineType } from "./inc/translate";
-
+import { FormatType } from "./inc/format";
 import {
   camelCase,
   paramCase,
@@ -66,6 +66,12 @@ async function getTranslateResult(srcText: string) {
     return null;
   }
 }
+
+async function getDefaultFormat() {
+  const type: FormatType = workspace.getConfiguration("varTranslation").defaultFormat;
+  return type;
+}
+
 async function main() {
   // 获取编辑器
   const editor = window.activeTextEditor;
@@ -82,7 +88,46 @@ async function main() {
       return;
     }
     // 组装选项
-    const userSelected = await vscodeSelect(translated);
+    let userSelected:any = null;
+    // 获取默认格式
+    const format = await getDefaultFormat();
+    if(format){
+      // userSelected = eval(`${format.toString()}(${selected})`);
+      switch(format.toString()){
+        case "camelCase":
+          userSelected=camelCase(selected);
+          break;
+        case "paramCase":
+          userSelected=paramCase(selected);
+          break;
+        case "pascalCase":
+          userSelected=pascalCase(selected);
+          break;
+        case "snakeCase":
+          userSelected=snakeCase(selected);
+          break;
+        case "constantCase":
+          userSelected=constantCase(selected);
+          break;
+        case "capitalCase":
+          userSelected=capitalCase(selected);
+          break;
+        case "dotCase":
+          userSelected=dotCase(selected);
+          break;
+        case "headerCase":
+          userSelected=headerCase(selected);
+          break;
+        case "noCase":
+          userSelected=noCase(selected);
+          break;
+        case "pathCase":
+          userSelected=pathCase(selected);
+          break;
+        }
+    }else{
+      userSelected = await vscodeSelect(translated);
+    }
     // 用户选中
     if (!userSelected) {
       return;
