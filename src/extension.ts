@@ -13,9 +13,26 @@ import {
   noCase,
   pathCase,
 } from "change-case";
+const changeCaseMap = [
+  { name: "camelCase", handle: camelCase, description: "camelCase 驼峰(小)" },
+  { name: "pascalCase", handle: pascalCase, description: "pascalCase 驼峰(大)" },
+  { name: "snakeCase", handle: snakeCase, description: "snakeCase 下划线" },
+  { name: "paramCase", handle: paramCase, description: "paramCase 中划线(小)" },
+  { name: "headerCase", handle: headerCase, description: "headerCase 中划线(大)" },
+  { name: "noCase", handle: noCase, description: "noCase 分词(小)" },
+  { name: "capitalCase", handle: capitalCase, description: "capitalCase 分词(大)" },
+  { name: "dotCase", handle: dotCase, description: "dotCase 对象属性" },
+  { name: "pathCase", handle: pathCase, description: "pathCase 文件路径" },
+  { name: "constantCase", handle: constantCase, description: "constantCase 常量" },
+];
 export function activate(context: ExtensionContext) {
-  const disposable = commands.registerCommand("extension.varTranslation", main);
-  context.subscriptions.push(disposable);
+  const translation = commands.registerCommand("extension.varTranslation", main);
+  context.subscriptions.push(translation);
+  changeCaseMap.forEach((item) => {
+    context.subscriptions.push(
+      commands.registerCommand(`extension.varTranslation.${item.name}`, () => typeTranslation(item.name))
+    );
+  });
 }
 export function deactivate() {}
 /**
@@ -24,18 +41,10 @@ export function deactivate() {}
  * @return  用户选择
  */
 async function vscodeSelect(word: string): Promise<string | undefined> {
-  const items: QuickPickItem[] = [
-    { label: camelCase(word), description: "camelCase 驼峰(小)" },
-    { label: pascalCase(word), description: "pascalCase 驼峰(大)" },
-    { label: snakeCase(word), description: "snakeCase 下划线" },
-    { label: paramCase(word), description: "paramCase 中划线(小)" },
-    { label: headerCase(word), description: "headerCase 中划线(大)" },
-    { label: noCase(word), description: "noCase 分词(小)" },
-    { label: capitalCase(word), description: "capitalCase 分词(大)" },
-    { label: dotCase(word), description: "dotCase 对象属性" },
-    { label: pathCase(word), description: "pathCase 文件路径" },
-    { label: constantCase(word), description: "constantCase 常量" },
-  ];
+  const items: QuickPickItem[] = changeCaseMap.map((item) => ({
+    label: item.handle(word),
+    description: item.description,
+  }));
   const opts: QuickPickOptions = { matchOnDescription: true, placeHolder: "choose replace 选择替换" };
   const selections = await window.showQuickPick(items, opts);
   if (!selections) {
@@ -73,8 +82,7 @@ async function main() {
     return;
   }
   // 获取选中文字
-  const { selections } = editor;
-  for (const selection of selections) {
+  for (const selection of editor.selections) {
     const selected = editor.document.getText(selection);
     // 获取翻译结果
     const translated = await getTranslateResult(selected);
@@ -91,3 +99,25 @@ async function main() {
     editor.edit((builder) => builder.replace(selection, userSelected));
   }
 }
+const typeTranslation = async (type: string) => {
+  const changeCase = changeCaseMap.find((item) => item.name === type);
+  if (!changeCase) {
+    return;
+  }
+  // 获取编辑器
+  const editor = window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
+  // 获取选中文字
+  for (const selection of editor.selections) {
+    const selected = editor.document.getText(selection);
+    // 获取翻译结果
+    const translated = await getTranslateResult(selected);
+    if (!translated) {
+      return;
+    }
+    // 替换文案
+    editor.edit((builder) => builder.replace(selection, changeCase.handle(translated)));
+  }
+};
