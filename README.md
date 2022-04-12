@@ -1,5 +1,6 @@
 # [驼峰翻译助手](https://marketplace.visualstudio.com/items?itemName=svenzhao.var-translation)
 
+[有问题直接报issue](https://github.com/SvenZhao/var-translation/issues) 
 ```
 因为翻译是通过爬虫实现的 某些情况下发出的请求会被翻译源识别为爬虫阻止
 紧急调整两个翻译渠道 
@@ -12,13 +13,13 @@
 ```
 
 
- ## 新增
-```
-  文案多选时可以依次翻译
-```
+ ## 新增功能 
+ ### 指定转换类型命令 
+![image2.png](https://s2.loli.net/2022/04/12/JOEYamiZAPMdfcg.png)
+### 转换类型命令 设置快捷键
+![image.png](https://s2.loli.net/2022/04/12/MvIZTaCiPpr35kA.png)
 
 
-[有问题直接报issue](https://github.com/SvenZhao/var-translation/issues) 
 ---
  ## 英文不好 写代起变量时候 你是否一直这样干?
  - 打开翻软件
