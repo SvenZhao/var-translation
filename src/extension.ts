@@ -13,6 +13,13 @@ import {
   noCase,
   pathCase,
 } from "change-case";
+interface IWordResult {
+  engine: EengineType;
+  srcText: string;
+  result: string;
+}
+/**翻译的内容缓存防止多次请求 */
+const translateCacheWords: IWordResult[] = [];
 const changeCaseMap = [
   { name: "camelCase", handle: camelCase, description: "camelCase 驼峰(小)" },
   { name: "pascalCase", handle: pascalCase, description: "pascalCase 驼峰(大)" },
@@ -25,6 +32,12 @@ const changeCaseMap = [
   { name: "pathCase", handle: pathCase, description: "pathCase 文件路径" },
   { name: "constantCase", handle: constantCase, description: "constantCase 常量" },
 ];
+let storageManager;
+interface IWordResult {
+  engine: EengineType;
+  srcText: string;
+  result: string;
+}
 export function activate(context: ExtensionContext) {
   const translation = commands.registerCommand("extension.varTranslation", main);
   context.subscriptions.push(translation);
@@ -59,16 +72,25 @@ async function vscodeSelect(word: string): Promise<string | undefined> {
 
 async function getTranslateResult(srcText: string) {
   const engine: EengineType = workspace.getConfiguration("varTranslation").translationEngine;
+  const cache = translateCacheWords.find((item) => item.engine === engine && item.srcText === srcText);
+  if (cache) {
+    console.log("使用缓存翻译", cache);
+    return Promise.resolve(cache.result);
+  }
   const translate = translatePlatforms[engine] || translatePlatforms.google;
   // 正则快速判断英文
   if (/^[a-zA-Z\d\s\/\-\._]+$/.test(srcText)) {
     return srcText;
   }
   try {
+    window.showQuickPick([{ label: "网络请求中..." }]);
     console.log(`使用${engine}翻译内容:${srcText}`);
     const res = await translate(srcText, { to: "en" });
-    console.log("res", res);
-    return res.text;
+    const result = res.text;
+    if (result) {
+      translateCacheWords.push({ engine, srcText, result });
+    }
+    return result;
   } catch (error) {
     console.error(error);
     window.showInformationMessage(`${engine}翻译异常,请检查网络或稍后重试 ${JSON.stringify(error)}`);
