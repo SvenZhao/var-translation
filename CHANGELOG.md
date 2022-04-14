@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.36](https://github.com/SvenZhao/var-translation/compare/v0.13.35...v0.13.36) (2022-04-14)
+
+
+### Features
+
+* 短时间的网络请求缓存 ([8528ae1](https://github.com/SvenZhao/var-translation/commit/8528ae188ec7f6bd9a634be9673ecad8a9a28d40))
+
 ### [0.13.35](https://github.com/SvenZhao/var-translation/compare/v0.13.34...v0.13.35) (2022-04-12)
 
 
