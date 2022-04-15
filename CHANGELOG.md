@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.37](https://github.com/SvenZhao/var-translation/compare/v0.13.36...v0.13.37) (2022-04-15)
+
+
+### Features
+
+* 更新翻译引擎 bing出问题临时用google替代 ([df50302](https://github.com/SvenZhao/var-translation/commit/df503020479e8790a3207e2173e06717881e3298))
+
 ### [0.13.36](https://github.com/SvenZhao/var-translation/compare/v0.13.35...v0.13.36) (2022-04-14)
 
 
