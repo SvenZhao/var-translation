@@ -32,7 +32,6 @@ const changeCaseMap = [
   { name: "pathCase", handle: pathCase, description: "pathCase 文件路径" },
   { name: "constantCase", handle: constantCase, description: "constantCase 常量" },
 ];
-let storageManager;
 interface IWordResult {
   engine: EengineType;
   srcText: string;
@@ -47,7 +46,7 @@ export function activate(context: ExtensionContext) {
     );
   });
 }
-export function deactivate() {}
+export function deactivate() { }
 /**
  * 用户选择选择转换形式
  * @param word 需要转换的单词
@@ -83,7 +82,7 @@ async function getTranslateResult(srcText: string) {
     return srcText;
   }
   try {
-    window.showQuickPick([{ label: "网络请求中..." }]);
+    window.showQuickPick([{ label: "网络翻译中..." }]);
     console.log(`使用${engine}翻译内容:${srcText}`);
     const res = await translate(srcText, { to: "en" });
     const result = res.text;
