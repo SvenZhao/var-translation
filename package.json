@@ -151,11 +151,8 @@
     "webpack-cli": "^4.2.0"
   },
   "dependencies": {
-    "@asmagin/google-translate-api": "^8.0.2",
-    "bing-translate-api": "^2.2.1",
-    "change-case": "^4.1.2",
-    "got": "^11.8.2",
-    "tough-cookie": "^4.0.0"
+    "@translate-tools/core": "^0.2.8",
+    "change-case": "^4.1.2"
   },
   "repository": {
     "type": "git",
