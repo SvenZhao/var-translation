@@ -84,7 +84,7 @@ async function getTranslateResult(srcText: string) {
   try {
     window.showQuickPick([{ label: "网络翻译中..." }]);
     console.log(`使用${engine}翻译内容:${srcText}`);
-    const res = await translate(srcText, { to: "en" });
+    const res = await translate(srcText, "en");
     const result = res.text;
     if (result) {
       translateCacheWords.push({ engine, srcText, result });

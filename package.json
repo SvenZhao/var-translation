@@ -4,7 +4,7 @@
   "description": "纠结怎么取变量? 中文一键翻译转换成常用大小驼峰等格式",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.13.38",
+  "version": "0.13.37",
   "engines": {
     "vscode": "^1.50.0"
   },
@@ -114,13 +114,27 @@
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
-            "google"
+            "google",
+            "baidu",
+            "tencent"
           ],
           "enumDescriptions": [
-            "谷歌中国"
+            "谷歌中国",
+            "百度",
+            "腾讯翻译君"
           ],
           "default": "google",
           "description": "翻译引擎"
+        },
+        "varTranslation.baiduSecret": {
+          "type": "string",
+          "default": "",
+          "description": "百度翻译密钥 使用逗号隔开例如 appid,scretkey"
+        },
+        "varTranslation.tencentSecret": {
+          "type": "string",
+          "default": "",
+          "description": "腾讯翻译君密钥 使用逗号隔开例如 secretId,secretKey"
         }
       }
     }
@@ -158,7 +172,10 @@
   },
   "dependencies": {
     "@asmagin/google-translate-api": "^8.0.2",
-    "change-case": "^4.1.2"
+    "change-case": "^4.1.2",
+    "md5": "^2.3.0",
+    "node-baidu-translate": "^0.1.0",
+    "tencentcloud-sdk-nodejs": "^4.0.331"
   },
   "repository": {
     "type": "git",
