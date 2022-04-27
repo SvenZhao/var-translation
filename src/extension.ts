@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-useless-escape */
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from "vscode";
 import translatePlatforms, { EengineType } from "./inc/translate";
 
@@ -13,12 +15,13 @@ import {
   noCase,
   pathCase,
 } from "change-case";
+
 interface IWordResult {
   engine: EengineType;
   srcText: string;
   result: string;
 }
-/**翻译的内容缓存防止多次请求 */
+/** 翻译的内容缓存防止多次请求 */
 const translateCacheWords: IWordResult[] = [];
 const changeCaseMap = [
   { name: "camelCase", handle: camelCase, description: "camelCase 驼峰(小)" },
@@ -32,11 +35,6 @@ const changeCaseMap = [
   { name: "pathCase", handle: pathCase, description: "pathCase 文件路径" },
   { name: "constantCase", handle: constantCase, description: "constantCase 常量" },
 ];
-interface IWordResult {
-  engine: EengineType;
-  srcText: string;
-  result: string;
-}
 export function activate(context: ExtensionContext) {
   const translation = commands.registerCommand("extension.varTranslation", main);
   context.subscriptions.push(translation);
@@ -73,7 +71,6 @@ async function getTranslateResult(srcText: string) {
   const engine: EengineType = workspace.getConfiguration("varTranslation").translationEngine;
   const cache = translateCacheWords.find((item) => item.engine === engine && item.srcText === srcText);
   if (cache) {
-    console.log("使用缓存翻译", cache);
     return Promise.resolve(cache.result);
   }
   const translate = translatePlatforms[engine] || translatePlatforms.google;
@@ -83,7 +80,6 @@ async function getTranslateResult(srcText: string) {
   }
   try {
     window.showQuickPick([{ label: "网络翻译中..." }]);
-    console.log(`使用${engine}翻译内容:${srcText}`);
     const res = await translate(srcText, "en");
     const result = res.text;
     if (result) {
@@ -91,8 +87,9 @@ async function getTranslateResult(srcText: string) {
     }
     return result;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
-    window.showInformationMessage(`${engine}翻译异常,请检查网络或稍后重试 ${JSON.stringify(error)}`);
+    window.showInformationMessage(`${engine}翻译异常,请检查网络或引擎token配置是否正确 ${JSON.stringify(error)}`);
     return null;
   }
 }
