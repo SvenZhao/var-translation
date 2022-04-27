@@ -111,6 +111,16 @@
       "type": "object",
       "title": "varTranslation configuration",
       "properties": {
+        "varTranslation.baiduSecret": {
+          "type": "string",
+          "default": "",
+          "description": "百度翻译密钥 使用逗号隔开例如 appid,scretkey"
+        },
+        "varTranslation.tencentSecret": {
+          "type": "string",
+          "default": "",
+          "description": "腾讯翻译君密钥 使用逗号隔开例如 secretId,secretKey"
+        },
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
@@ -125,16 +135,6 @@
           ],
           "default": "google",
           "description": "翻译引擎"
-        },
-        "varTranslation.baiduSecret": {
-          "type": "string",
-          "default": "",
-          "description": "百度翻译密钥 使用逗号隔开例如 appid,scretkey"
-        },
-        "varTranslation.tencentSecret": {
-          "type": "string",
-          "default": "",
-          "description": "腾讯翻译君密钥 使用逗号隔开例如 secretId,secretKey"
         }
       }
     }
@@ -150,7 +150,9 @@
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
     "release": "standard-version",
-    "publish": "npm run release && vsce publish"
+    "publish": "npm run release && vsce publish",
+    "f2elint-scan": "f2elint scan",
+    "f2elint-fix": "f2elint fix"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
@@ -158,9 +160,7 @@
     "@types/mocha": "^8.0.4",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.50.0",
-    "@typescript-eslint/eslint-plugin": "^4.9.0",
-    "@typescript-eslint/parser": "^4.9.0",
-    "eslint": "^7.15.0",
+    "f2elint": "^2.2.1",
     "glob": "^7.1.6",
     "mocha": "^8.1.3",
     "standard-version": "^9.1.0",
@@ -181,5 +181,11 @@
     "type": "git",
     "url": "https://github.com/SvenZhao/var-translation"
   },
-  "homepage": "https://github.com/SvenZhao/var-translation/blob/master/README.md"
+  "homepage": "https://github.com/SvenZhao/var-translation/blob/master/README.md",
+  "husky": {
+    "hooks": {
+      "pre-commit": "f2elint commit-file-scan",
+      "commit-msg": "f2elint commit-msg-scan"
+    }
+  }
 }

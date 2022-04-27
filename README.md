@@ -2,23 +2,21 @@
 
 [有问题直接报issue](https://github.com/SvenZhao/var-translation/issues) 
 ```
-因为翻译是通过爬虫实现的 某些情况下发出的请求会被翻译源识别为爬虫阻止
-紧急调整两个翻译渠道 
-分别是谷歌和必应
-可以在插件配置中Translation Engine中切换
+更新了免费的谷歌翻译引擎
 
-
-
-后续可能会通过申请key的方式接入官方的jsdk
+长期自用优先使用自定义token的翻译服务
 ```
+ ## 支持的翻译引擎
+ - 谷歌 免费的爬虫翻译服务 但是不稳定 经常受到网络影响
+ - 百度翻译 需要token [申请步骤请查看](https://hcfy.app/docs/services/baidu-api)
+ - 腾讯翻译君 需要token [申请步骤请查看](https://hcfy.app/docs/services/qq-api)
+![image.png](https://s2.loli.net/2022/04/27/3GVQkIyZdsv2fYC.png)
 
-
- ## 新增功能 
- ### 指定转换类型命令 
+---
+ ## 指定转换类型命令 
 ![image2.png](https://s2.loli.net/2022/04/12/JOEYamiZAPMdfcg.png)
-### 转换类型命令 设置快捷键
+## 转换类型命令 设置快捷键
 ![image.png](https://s2.loli.net/2022/04/12/MvIZTaCiPpr35kA.png)
-
 
 ---
  ## 英文不好 写代起变量时候 你是否一直这样干?
@@ -38,6 +36,5 @@
     win: "Alt+shift+t" 
     mac": "cmd+shift+t"
     
- ## 支持的翻译引擎
-    谷歌 微软 有道 百度
+ 
  
