@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.38](https://github.com/SvenZhao/var-translation/compare/v0.13.37...v0.13.38) (2022-04-27)
+
+
+### Features
+
+* 修复翻译引擎 ([d00a493](https://github.com/SvenZhao/var-translation/commit/d00a493e4735ffd59f2b48d896079a4e7c517c09))
+
 ### [0.13.37](https://github.com/SvenZhao/var-translation/compare/v0.13.36...v0.13.37) (2022-04-15)
 
 
