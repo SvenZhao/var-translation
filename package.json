@@ -34,7 +34,7 @@
     "commands": [
       {
         "command": "extension.varTranslation",
-        "title": "选择翻译",
+        "title": "varTranslation选择翻译",
         "when": "editorTextFocus",
         "category": "var-translation"
       },
@@ -99,6 +99,14 @@
         "category": "var-translation"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorTextFocus",
+          "command": "extension.varTranslation"
+        }
+      ]
+    },
     "configuration": {
       "type": "object",
       "title": "varTranslation configuration",
@@ -106,12 +114,10 @@
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
-            "google",
-            "bing"
+            "google"
           ],
           "enumDescriptions": [
-            "谷歌中国",
-            "必应"
+            "谷歌中国"
           ],
           "default": "google",
           "description": "翻译引擎"
@@ -151,7 +157,7 @@
     "webpack-cli": "^4.2.0"
   },
   "dependencies": {
-    "@translate-tools/core": "^0.2.8",
+    "@asmagin/google-translate-api": "^8.0.2",
     "change-case": "^4.1.2"
   },
   "repository": {

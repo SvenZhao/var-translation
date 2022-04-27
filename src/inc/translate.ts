@@ -1,19 +1,11 @@
-import { GoogleTranslator } from '@translate-tools/core/translators/GoogleTranslator';
-// const bing = new GoogleTranslator();
-const google = new GoogleTranslator();
-const bing = new GoogleTranslator();
+const google = require("@asmagin/google-translate-api");
+
 export enum EengineType {
   google = "google",
-  bing = "bing",
 }
 const engineType = {
-  google: async (src: string, { to }: { to: any }) => {
-    const res = await google.translate(src, 'auto', to);
-    return { text: res };
-  },
-  bing: async (src: string, { to }: { to: any }) => {
-    const res = await bing.translate(src, 'auto', to);
-    return { text: res };
-  },
+  google: (src: string, config: any) => {
+    return google(src, { ...config, tld: "cn" });
+  }
 };
 export default engineType;
