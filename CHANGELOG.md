@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.39](https://github.com/SvenZhao/var-translation/compare/v0.13.38...v0.13.39) (2022-04-27)
+
+
+### Features
+
+* 支持新的翻译引擎 ([e008ad4](https://github.com/SvenZhao/var-translation/commit/e008ad494037cdd178f1a069ef33497dbe0722e6))
+* 新增腾讯和百度翻译 ([4997900](https://github.com/SvenZhao/var-translation/commit/4997900c2f2c49172a1208556cbe45c83243d6e2))
+
 ### [0.13.38](https://github.com/SvenZhao/var-translation/compare/v0.13.37...v0.13.38) (2022-04-27)
 
 
