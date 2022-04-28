@@ -17,7 +17,8 @@
     "camel",
     "var",
     "翻译",
-    "变量"
+    "变量",
+    "驼峰"
   ],
   "activationEvents": [
     "*"
@@ -34,7 +35,7 @@
     "commands": [
       {
         "command": "extension.varTranslation",
-        "title": "varTranslation选择翻译",
+        "title": "驼峰翻译选择翻译",
         "when": "editorTextFocus",
         "category": "var-translation"
       },
@@ -109,7 +110,7 @@
     },
     "configuration": {
       "type": "object",
-      "title": "varTranslation configuration",
+      "title": "驼峰翻译配置",
       "properties": {
         "varTranslation.baiduSecret": {
           "type": "string",
