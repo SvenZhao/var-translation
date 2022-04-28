@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.41](https://github.com/SvenZhao/var-translation/compare/v0.13.40...v0.13.41) (2022-04-28)
+
+
+### Features
+
+* 调整配置名称 ([4fada31](https://github.com/SvenZhao/var-translation/commit/4fada3116a5988fee59b909e2ffa9c0c6431a889))
+
 ### [0.13.40](https://github.com/SvenZhao/var-translation/compare/v0.13.39...v0.13.40) (2022-04-27)
 
 
