@@ -35,7 +35,28 @@ const changeCaseMap = [
   { name: "pathCase", handle: pathCase, description: "pathCase 文件路径" },
   { name: "constantCase", handle: constantCase, description: "constantCase 常量" },
 ];
+
+const checkUpdate = async (context: ExtensionContext) => {
+  const { packageJSON } = context.extension
+  const { globalState } = context;
+  const CACHE_KEY = `${packageJSON.name}-${packageJSON.version}`;
+  const version = globalState.get(CACHE_KEY);
+  const extensionVersion = packageJSON.version;
+  // eslint-disable-next-line no-console
+  console.log('extensionVersion', extensionVersion, version);
+  const contentText = `
+  ${packageJSON.displayName}更新:\r
+  替换 谷歌翻译(免费爬虫 不稳定)\r
+  新增 百度翻译 (手动配置token)\r
+  新增 腾讯翻译 (手动配置token)\r
+  `
+  if (version !== extensionVersion) {
+    globalState.update(CACHE_KEY, extensionVersion);
+    window.showInformationMessage(contentText, { modal: true });
+  }
+}
 export function activate(context: ExtensionContext) {
+  checkUpdate(context);
   const translation = commands.registerCommand("extension.varTranslation", main);
   context.subscriptions.push(translation);
   changeCaseMap.forEach((item) => {

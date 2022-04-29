@@ -115,12 +115,12 @@
         "varTranslation.baiduSecret": {
           "type": "string",
           "default": "",
-          "description": "百度翻译密钥 使用逗号隔开例如 appid,scretkey"
+          "description": "百度翻译密钥 使用逗号隔开例如 appid,scretkey 申请地址看文档"
         },
         "varTranslation.tencentSecret": {
           "type": "string",
           "default": "",
-          "description": "腾讯翻译君密钥 使用逗号隔开例如 secretId,secretKey"
+          "description": "腾讯翻译君密钥 使用逗号隔开例如 secretId,secretKey 申请地址看文档"
         },
         "varTranslation.translationEngine": {
           "type": "string",

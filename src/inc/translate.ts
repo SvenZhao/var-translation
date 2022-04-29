@@ -6,6 +6,7 @@ const google = require("@asmagin/google-translate-api");
 const BaiduTranslate = require("node-baidu-translate");
 const tencentcloud = require("tencentcloud-sdk-nodejs");
 
+
 let baidu: any;
 let tencent: any;
 export enum EengineType {
@@ -49,6 +50,6 @@ const engineType = {
     const params = { SourceText: src, Source: "auto", Target: to, ProjectId: 0, };
     const res = await tencent.TextTranslate(params);
     return { text: res.TargetText };
-  },
+  }
 };
 export default engineType;
