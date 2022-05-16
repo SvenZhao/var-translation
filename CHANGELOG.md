@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.43](https://github.com/SvenZhao/var-translation/compare/v0.13.42...v0.13.43) (2022-05-16)
+
+
+### Bug Fixes
+
+* 驼峰(大) 和 中划线(小) 指令反了 ([5a62d0f](https://github.com/SvenZhao/var-translation/commit/5a62d0f776f5b5d5138ae50b9f03c7ae1a11db50))
+
 ### [0.13.42](https://github.com/SvenZhao/var-translation/compare/v0.13.41...v0.13.42) (2022-04-29)
 
 
