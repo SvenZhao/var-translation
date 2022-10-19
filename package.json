@@ -122,6 +122,11 @@
           "default": "",
           "description": "腾讯翻译君密钥 使用逗号隔开例如 secretId,secretKey 申请地址看文档"
         },
+        "varTranslation.googleTld": {
+          "type": "string",
+          "default": "",
+          "description": "用于在调用API时使用的谷歌翻译的顶级域名:https://translate.google.{Tld} 默认为com"
+        },
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
