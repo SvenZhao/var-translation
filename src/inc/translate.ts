@@ -16,7 +16,8 @@ export enum EengineType {
 }
 const engineType = {
   google: (src: string, to: string) => {
-    return google(src, { to, tld: "cn" });
+    const tld = workspace.getConfiguration("varTranslation").googleTld;
+    return google(src, { to, tld: tld==''?'com':tld });
   },
   baidu: async (src: string, to: string) => {
     const tokens = workspace.getConfiguration("varTranslation").baiduSecret.split(",");
