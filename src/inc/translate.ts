@@ -45,7 +45,7 @@ const engineType = {
     if (!secretId || !secretKey) {
       window.showInformationMessage('腾讯翻译君未配置 请先在设置中配置');
     }
-    if (!baidu) {
+    if (!tencent) {
       tencent = new TmtClient(clientConfig);
     }
     const params = { SourceText: src, Source: "auto", Target: to, ProjectId: 0, };
