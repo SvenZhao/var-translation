@@ -6,12 +6,14 @@ import { window, workspace } from 'vscode';
 const google = require('@asmagin/google-translate-api');
 const BaiduTranslate = require('node-baidu-translate');
 const tencentcloud = require('tencentcloud-sdk-nodejs');
+const { Configuration, OpenAIApi } = require('openai');
 
 // 定义一个枚举类型，表示不同的翻译引擎
 export enum EengineType {
   google = 'google',
   baidu = 'baidu',
   tencent = 'tencent',
+  ChatGpt = 'ChatGpt',
 }
 const getSecret = (engineType: EengineType, secretName: string) => {
   // 获取配置中的密钥字符串，分割为两个部分
@@ -59,6 +61,23 @@ const engines = {
     const params = { SourceText: src, Source: 'auto', Target: to, ProjectId: 0 };
     const res = await tencent.TextTranslate(params);
     return { text: res.TargetText };
+  },
+  async ChatGpt(src: string, to: string) {
+    const { apiKey, apiBaseUrl } = workspace.getConfiguration('varTranslation').openai;
+    if (!apiKey) window.showInformationMessage('openai Api Key未配置 请先在设置中配置');
+    const configuration = new Configuration({ apiKey, basePath: apiBaseUrl });
+    const openai = (engines as any).openai.instance || new OpenAIApi(configuration);
+    const res = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are a translator assistant.' },
+        {
+          role: 'user',
+          content: `Translate the following text into ${to}. Retain the original format. Return only the translation and nothing else: ${src}`,
+        },
+      ],
+    });
+    return { text: res.data.choices[0].message.content };
   },
 };
 export default engines;
