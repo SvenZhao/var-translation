@@ -127,17 +127,29 @@
           "default": "",
           "description": "用于在调用API时使用的谷歌翻译的顶级域名:https://translate.google.{Tld} 默认为com"
         },
+        "varTranslation.openai.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "官方ApiKey是sk-开头的字符串"
+        },
+        "varTranslation.openai.apiBaseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API基础URL的可选覆盖。如果您自定义了它，请确保具有相同的格式，例如以https://开头且没有尾随斜杠。补全端点的后缀将在内部添加，例如：${apiBaseUrl}/chat/completions，参考官方路线：https://api.openai.com/v1。"
+        },
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
             "google",
             "baidu",
-            "tencent"
+            "tencent",
+            "ChatGpt"
           ],
           "enumDescriptions": [
             "谷歌中国",
             "百度",
-            "腾讯翻译君"
+            "腾讯翻译君",
+            "ChatGpt"
           ],
           "default": "google",
           "description": "翻译引擎"
@@ -180,6 +192,7 @@
     "@asmagin/google-translate-api": "^8.0.2",
     "change-case": "^4.1.2",
     "node-baidu-translate": "^0.1.0",
+    "openai": "^3.3.0",
     "tencentcloud-sdk-nodejs": "^4.0.331"
   },
   "repository": {
