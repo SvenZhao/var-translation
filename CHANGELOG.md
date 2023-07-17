@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.46](https://github.com/SvenZhao/var-translation/compare/v0.13.45...v0.13.46) (2023-07-17)
+
+
+### Features
+
+* 测试支持chatgpt翻译 ([3a9a7bd](https://github.com/SvenZhao/var-translation/commit/3a9a7bd4a8600c0f178a9a164b0f9bd134160afb))
+* 优化 ([92be050](https://github.com/SvenZhao/var-translation/commit/92be05092cb918c6e180dae248b148d0190c5791))
+* 优化 ([be8162d](https://github.com/SvenZhao/var-translation/commit/be8162d8c88affaa7c831e8bfdccd34c769cd42e))
+* 优化代码逻辑 ([3fa5653](https://github.com/SvenZhao/var-translation/commit/3fa565381994e06d420f6bbf7bf80e9165ed7fd1))
+* add chatgpt translation ([8751df9](https://github.com/SvenZhao/var-translation/commit/8751df975a0813379d4a82ff74f1855d726cf285))
+
+
+### Bug Fixes
+
+* 切换tencent翻译后翻译报错 ([e6eb3f6](https://github.com/SvenZhao/var-translation/commit/e6eb3f64369565e3420613f8875d00a5d968d98f))
+
 ### [0.13.45](https://github.com/SvenZhao/var-translation/compare/v0.13.44...v0.13.45) (2022-10-31)
 
 ### 0.13.44 (2022-10-31)
