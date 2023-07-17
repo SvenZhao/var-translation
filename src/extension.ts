@@ -49,6 +49,7 @@ const checkUpdate = async (context: ExtensionContext) => {
   替换 谷歌翻译(免费爬虫 不稳定)\r
   新增 百度翻译 (手动配置token)\r
   新增 腾讯翻译 (手动配置token)\r
+  新增 chatgpt翻译 (手动配置)\r
   `
   if (version !== extensionVersion) {
     globalState.update(CACHE_KEY, extensionVersion);
