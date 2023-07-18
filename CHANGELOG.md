@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.48](https://github.com/SvenZhao/var-translation/compare/v0.13.47...v0.13.48) (2023-07-18)
+
+
+### Bug Fixes
+
+* chatgpt function bug ([1b5f6e1](https://github.com/SvenZhao/var-translation/commit/1b5f6e1fe3a1efb83f0882663410b346b2ab5720))
+
 ### [0.13.47](https://github.com/SvenZhao/var-translation/compare/v0.13.46...v0.13.47) (2023-07-17)
 
 
