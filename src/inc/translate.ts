@@ -65,8 +65,14 @@ const engines = {
   async ChatGpt(src: string, to: string) {
     const { apiKey, apiBaseUrl } = workspace.getConfiguration('varTranslation').openai;
     if (!apiKey) window.showInformationMessage('openai Api Key未配置 请先在设置中配置');
-    const configuration = new Configuration({ apiKey, basePath: apiBaseUrl });
-    const openai = (engines as any).ChatGpt.instance || new OpenAIApi(configuration);
+    let openai = (engines as any).ChatGpt.instance;
+
+    if (!openai) {
+      const configuration = new Configuration({ apiKey, basePath: apiBaseUrl });
+      openai = new OpenAIApi(configuration);
+      (engines as any).ChatGpt.instance = openai;
+    }
+
     const res = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       messages: [
