@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-shadow */
+import axios from 'axios';
 import { window, workspace } from 'vscode';
 
 // 引入三个翻译引擎
@@ -14,6 +15,7 @@ export enum EengineType {
   baidu = 'baidu',
   tencent = 'tencent',
   ChatGpt = 'ChatGpt',
+  libretranslate = 'libretranslate',
 }
 const getSecret = (engineType: EengineType, secretName: string) => {
   // 获取配置中的密钥字符串，分割为两个部分
@@ -84,6 +86,32 @@ const engines = {
       ],
     });
     return { text: res.data.choices[0].message.content };
+  },
+  // libretranslate 翻译
+  async libretranslate(src: string, to: string) {
+    const { apiBaseUrl, apiKey } = workspace.getConfiguration('varTranslation').libretranslate;
+    let libretranslate = (engines as any).libretranslate.instance;
+
+    if (!libretranslate) {
+      libretranslate = async (src: string, to: string) => {
+        try {
+          return await axios.post(apiBaseUrl, {
+            q: src,
+            source: 'auto',
+            target: to,
+            format: 'text',
+            api_key: apiKey ?? '',
+          });
+        } catch (err) {
+          return err;
+        }
+      };
+
+      (engines as any).libretranslate.instance = libretranslate;
+    }
+
+    const res = await libretranslate(src, to);
+    return { text: res.data.translatedText };
   },
 };
 export default engines;
