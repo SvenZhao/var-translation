@@ -12,7 +12,7 @@
 
 docker-compose.yaml
 
-```docker
+```yaml
 version: '3.9'
 services:
   libretranslate:
