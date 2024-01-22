@@ -25,6 +25,7 @@ services:
     # environment:
     #   - LT_API_KEYS=true # 使用 api
     #   - LT_REQ_LIMIT=1000 # 设置每个客户端每分钟的最大请求数(超出API密钥设置的限制)
+    #   - LT_REQUIRE_API_KEY_SECRET=true # 需要使用API密钥才能以编程方式访问API，除非客户端还发送秘密匹配
     #   - LT_API_KEYS_DB_PATH=/app/db/api_keys.db # Same result as `db/api_keys.db` or `./db/api_keys.db`
     volumes:
       - './lt-local:/home/libretranslate/.local'
