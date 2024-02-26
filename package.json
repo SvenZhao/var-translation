@@ -137,19 +137,31 @@
           "default": "",
           "description": "OpenAI API基础URL的可选覆盖。如果您自定义了它，请确保具有相同的格式，例如以https://开头且没有尾随斜杠。补全端点的后缀将在内部添加，例如：${apiBaseUrl}/chat/completions，参考官方路线：https://api.openai.com/v1。"
         },
+        "varTranslation.libretranslate.apiBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:5000/translate",
+          "description": "libretranslate api, libretranslate 仓库地址: https://github.com/LibreTranslate/LibreTranslate"
+        },
+        "varTranslation.libretranslate.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "libretranslate api_key,如果开启了key"
+        },
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
             "google",
             "baidu",
             "tencent",
-            "ChatGpt"
+            "ChatGpt",
+            "libretranslate"
           ],
           "enumDescriptions": [
             "谷歌中国",
             "百度",
             "腾讯翻译君",
-            "ChatGpt"
+            "ChatGpt",
+            "自建翻译"
           ],
           "default": "google",
           "description": "翻译引擎"
@@ -190,6 +202,7 @@
   },
   "dependencies": {
     "@asmagin/google-translate-api": "^8.0.2",
+    "axios": "^1.6.5",
     "change-case": "^4.1.2",
     "node-baidu-translate": "^0.1.0",
     "openai": "^3.3.0",
