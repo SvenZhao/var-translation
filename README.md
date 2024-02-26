@@ -8,7 +8,7 @@
 长期自用优先使用自定义token的翻译服务
 ```
 
-## 自建 翻译
+## 自建 翻译 (感谢 github:kongxiangyiren)
 
 docker-compose.yaml
 
