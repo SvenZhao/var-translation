@@ -147,6 +147,11 @@
           "default": "",
           "description": "libretranslate api_key,如果开启了key"
         },
+        "varTranslation.deeplx.apiBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:5000/translate",
+          "description": "deeplx API"
+        },
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
@@ -154,14 +159,16 @@
             "baidu",
             "tencent",
             "ChatGpt",
-            "libretranslate"
+            "libretranslate",
+            "deeplx"
           ],
           "enumDescriptions": [
             "谷歌中国",
             "百度",
             "腾讯翻译君",
             "ChatGpt",
-            "自建翻译"
+            "自建翻译",
+            "deeplx"
           ],
           "default": "google",
           "description": "翻译引擎"
