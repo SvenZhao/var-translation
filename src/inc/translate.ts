@@ -122,7 +122,7 @@ const engines = {
       return { text: '' };
     } else {
       try {
-        const response = await axios.post(apiBaseUrl, JSON.stringify({ text: src, target_lang: to, source_lang: "zh" }), {
+        const response = await axios.post(apiBaseUrl, JSON.stringify({ text: src, target_lang: to, source_lang: "auto" }), {
             headers: {
                 'Content-Type': 'application/json'
             }
