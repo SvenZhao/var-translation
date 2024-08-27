@@ -113,5 +113,31 @@ const engines = {
     const res = await libretranslate(src, to);
     return { text: res.data.translatedText };
   },
+  // deeplx
+  async deeplx(src: string, to: string) {
+    const { apiBaseUrl } = workspace.getConfiguration('varTranslation').deeplx;
+
+    if (!apiBaseUrl) {
+      window.showInformationMessage('请先在设置中配置');
+      return { text: '' };
+    } else {
+      try {
+        const response = await axios.post(apiBaseUrl, JSON.stringify({ text: src, target_lang: to, source_lang: "auto" }), {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (response.data.code !== 200) {
+            window.showErrorMessage(`请求失败，错误码：${response.data.code}`);
+            return { text: '' };
+        }
+        const translatedText = response.data.data;
+        return { text: translatedText };
+    } catch (error) {
+        window.showErrorMessage(`请求失败: ${error}`);
+        return { text: '' };
+    }
+    }
+  }
 };
 export default engines;
