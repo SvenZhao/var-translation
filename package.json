@@ -4,7 +4,7 @@
   "description": "纠结怎么取变量? 中文一键翻译转换成常用大小驼峰等格式",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.13.50",
+  "version": "0.13.51",
   "engines": {
     "vscode": "^1.50.0"
   },
