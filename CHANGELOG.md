@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.52](https://github.com/SvenZhao/var-translation/compare/v0.13.51...v0.13.52) (2024-11-15)
+
+
+### Features
+
+* 更新说明 ([824c671](https://github.com/SvenZhao/var-translation/commit/824c67123e6222ca41b6f0990fdc24a4492a6e9f))
+* 加入翻译服务异常的提示 ([b98c1c1](https://github.com/SvenZhao/var-translation/commit/b98c1c14c88b8dd8609e7718b0a3200e583abadd))
+* 支持展示英汉互译 ([374fc07](https://github.com/SvenZhao/var-translation/commit/374fc07505bd1b2dd156ee991de419c264364baa))
+* chatgpt 提示语 ([9410098](https://github.com/SvenZhao/var-translation/commit/9410098a80031d4573a6fee9c5eb04edb1807f92))
+
 ### 0.13.51 (2024-08-27)
 
 
