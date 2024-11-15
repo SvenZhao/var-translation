@@ -16,6 +16,7 @@ export enum EengineType {
   tencent = 'tencent',
   ChatGpt = 'ChatGpt',
   libretranslate = 'libretranslate',
+  deeplx = 'deeplx',
 }
 const getSecret = (engineType: EengineType, secretName: string) => {
   // 获取配置中的密钥字符串，分割为两个部分

@@ -37,7 +37,11 @@ const checkUpdate = async (context: ExtensionContext) => {
     globalState.update(CACHE_KEY, extensionVersion);
     const contentText = `
     ${packageJSON.displayName}更新:\r
-    新增 展示英汉互译的原文\r,
+    新增 英汉互译\r,
+    新增 翻译结果展示\r,
+    新增 chagpt 支持自定义模型\r,
+    优化 chagpt提示语 更适合开发场景\r,
+    优化 展示翻译异常时候错误消息 方便找原因\r,
     `;
     window.showInformationMessage(contentText);
   }
