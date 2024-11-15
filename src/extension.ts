@@ -67,7 +67,7 @@ async function getTranslateResult(srcText: string, to: string) {
 
   const translate = translatePlatforms[engine] || translatePlatforms.google;
   try {
-    window.setStatusBarMessage(`${packageJSON.displayName} 正在翻译: ${srcText}`, 2000);
+    window.setStatusBarMessage(`${engine} 正在翻译: ${srcText}`, 2000);
     const res = await translate(srcText, to);
     const result = res.text;
 
