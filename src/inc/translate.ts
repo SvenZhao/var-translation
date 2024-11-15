@@ -78,10 +78,10 @@ const engines = {
     const res = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: 'You are a translator assistant.' },
+        { role: 'system', content: 'You are a technical translator assisting in software development. Ensure that all technical terms, code snippets, and programming-related content are translated accurately, while maintaining their original format.' },
         {
           role: 'user',
-          content: `Translate the following text into ${to}. Retain the original format. Return only the translation and nothing else: ${src}`,
+          content: `Translate the following text into ${to}, keeping the programming context intact. Retain the original format of code, variable names, and technical terms. Return only the translated text with no additional commentary or explanation: ${src}`,
         },
       ],
     });
