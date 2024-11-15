@@ -137,6 +137,11 @@
           "default": "",
           "description": "OpenAI API基础URL的可选覆盖。如果您自定义了它，请确保具有相同的格式，例如以https://开头且没有尾随斜杠。补全端点的后缀将在内部添加，例如：${apiBaseUrl}/chat/completions，参考官方路线：https://api.openai.com/v1。"
         },
+        "varTranslation.openai.model": {
+          "type": "string",
+          "default": "gpt-3.5-turbo",
+          "description": "自定义模型"
+        },
         "varTranslation.libretranslate.apiBaseUrl": {
           "type": "string",
           "default": "http://localhost:5000/translate",

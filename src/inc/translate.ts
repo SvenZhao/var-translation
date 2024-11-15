@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import axios from 'axios';
 import { window, workspace } from 'vscode';
+import { OpenAIApi, Configuration } from 'openai';
 
 // 引入三个翻译引擎
 const google = require('@asmagin/google-translate-api');
 const BaiduTranslate = require('node-baidu-translate');
 const tencentcloud = require('tencentcloud-sdk-nodejs');
-const { Configuration, OpenAIApi } = require('openai');
 
 // 定义一个枚举类型，表示不同的翻译引擎
 export enum EengineType {
@@ -32,8 +32,12 @@ const engines = {
   google(src: string, to: string) {
     // 获取配置中的谷歌域名后缀，默认为com
     const tld = workspace.getConfiguration('varTranslation').googleTld || 'com';
-    // 调用谷歌翻译接口，返回结果
-    return google(src, { to, tld });
+    try {
+      return google(src, { to, tld });
+    } catch (error) {
+      window.showErrorMessage(`请求失败: ${error}`);
+      return { text: '' };
+    }
   },
   // 百度翻译引擎
   async baidu(src: string, to: string) {
@@ -42,9 +46,13 @@ const engines = {
     // 创建一个百度翻译实例，只创建一次
     const baidu = (engines as any).baidu.instance || new BaiduTranslate(appid, secretKey);
     (engines as any).baidu.instance = baidu;
-    // 调用百度翻译接口，返回结果
-    const res = await baidu.translate(src, to);
-    return { text: res.trans_result[0].dst };
+    try {
+      const res = await baidu.translate(src, to);
+      return { text: res.trans_result[0].dst };
+    } catch (error) {
+      window.showErrorMessage(`请求失败: ${error}`);
+      return { text: '' };
+    }
   },
   // 腾讯翻译引擎
   async tencent(src: string, to: string) {
@@ -61,37 +69,45 @@ const engines = {
     (engines as any).tencent.instance = tencent;
     // 调用腾讯翻译接口，返回结果
     const params = { SourceText: src, Source: 'auto', Target: to, ProjectId: 0 };
-    const res = await tencent.TextTranslate(params);
-    return { text: res.TargetText };
+    try {
+      const res = await tencent.TextTranslate(params);
+      return { text: res.TargetText };
+    } catch (error) {
+      window.showErrorMessage(`请求失败: ${error}`);
+      return { text: '' };
+    }
   },
   async ChatGpt(src: string, to: string) {
-    const { apiKey, apiBaseUrl } = workspace.getConfiguration('varTranslation').openai;
+    const { apiKey, apiBaseUrl, model } = workspace.getConfiguration('varTranslation').openai;
     if (!apiKey) window.showInformationMessage('openai Api Key未配置 请先在设置中配置');
     let openai = (engines as any).ChatGpt.instance;
-
     if (!openai) {
       const configuration = new Configuration({ apiKey, basePath: apiBaseUrl });
       openai = new OpenAIApi(configuration);
       (engines as any).ChatGpt.instance = openai;
     }
+    try {
+      const res = await openai.createChatCompletion({
+        model,
+        messages: [
+          { role: 'system', content: 'You are a technical translator assisting in software development. Ensure that all technical terms, code snippets, and programming-related content are translated accurately, while maintaining their original format.' },
+          {
+            role: 'user',
+            content: `Translate the following text into ${to}, keeping the programming context intact. Retain the original format of code, variable names, and technical terms. Return only the translated text with no additional commentary or explanation: ${src}`,
+          },
+        ],
+      });
+      return { text: res.data.choices[0].message.content };
+    } catch (error) {
+      window.showErrorMessage(`请求失败: ${error}`);
+      return { text: '' };
+    }
 
-    const res = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        { role: 'system', content: 'You are a technical translator assisting in software development. Ensure that all technical terms, code snippets, and programming-related content are translated accurately, while maintaining their original format.' },
-        {
-          role: 'user',
-          content: `Translate the following text into ${to}, keeping the programming context intact. Retain the original format of code, variable names, and technical terms. Return only the translated text with no additional commentary or explanation: ${src}`,
-        },
-      ],
-    });
-    return { text: res.data.choices[0].message.content };
   },
   // libretranslate 翻译
   async libretranslate(src: string, to: string) {
     const { apiBaseUrl, apiKey } = workspace.getConfiguration('varTranslation').libretranslate;
     let libretranslate = (engines as any).libretranslate.instance;
-
     if (!libretranslate) {
       libretranslate = async (src: string, to: string) => {
         try {
@@ -106,12 +122,15 @@ const engines = {
           return err;
         }
       };
-
       (engines as any).libretranslate.instance = libretranslate;
     }
-
-    const res = await libretranslate(src, to);
-    return { text: res.data.translatedText };
+    try {
+      const res = await libretranslate(src, to);
+      return { text: res.data.translatedText };
+    } catch (error) {
+      window.showErrorMessage(`请求失败: ${error}`);
+      return { text: '' };
+    }
   },
   // deeplx
   async deeplx(src: string, to: string) {
