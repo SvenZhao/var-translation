@@ -88,8 +88,14 @@ const engines = {
       const res = await openai.createChatCompletion({
         model,
         messages: [
-          { role: 'system', content: 'You are a technical translator assisting in software development.' },
-          { role: 'user', content: `Translate the following text into ${to}: ${src}` },
+          {
+            role: 'system',
+            content: '你是一名专业的翻译助手，专注于帮助程序员翻译变量名。请根据目标语言翻译输入的变量名，确保翻译后的内容准确反映其含义，无需考虑命名规范。'
+          },
+          {
+            role: 'user',
+            content: `请将以下变量名翻译为${to}：${src}`
+          },
         ],
       });
       return { text: res.data.choices[0].message.content };
