@@ -216,6 +216,7 @@
     "@asmagin/google-translate-api": "^8.0.2",
     "axios": "^1.6.5",
     "change-case": "^4.1.2",
+    "franc-min": "^6.2.0",
     "node-baidu-translate": "^0.1.0",
     "openai": "^3.3.0",
     "tencentcloud-sdk-nodejs": "^4.0.331"

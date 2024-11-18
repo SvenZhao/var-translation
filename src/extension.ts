@@ -3,6 +3,7 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
 import translatePlatforms, { EengineType } from './inc/translate';
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
+import { isEnglish } from './utils';
 
 interface IWordResult {
   engine: EengineType;
@@ -108,7 +109,7 @@ async function main() {
 
   for (const selection of editor.selections) {
     const selected = editor.document.getText(selection);
-    const isEn = /^[a-zA-Z\d\s\/\-\._]+$/.test(selected);
+    const isEn = isEnglish(selected);
     const to = isEn ? 'zh' : 'en';
 
     // 获取翻译结果或直接使用原文本
@@ -137,7 +138,7 @@ const typeTranslation = async (type: string) => {
 
   for (const selection of editor.selections) {
     const selected = editor.document.getText(selection);
-    const isEn = /^[a-zA-Z\d\s\/\-\._]+$/.test(selected);
+    const isEn = isEnglish(selected);
     const word = isEn ? selected : await getTranslateResult(selected, 'en');
 
     if (word) {

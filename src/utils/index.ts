@@ -1,5 +1,6 @@
+import { franc } from 'franc-min';
 
-/* eslint-disable no-useless-escape */
-export const isEn = (srcText: string) => {
-  return /^[a-zA-Z\d\s\/\-\._]+$/.test(srcText)
+export function isEnglish(text: string): boolean {
+  // 使用 franc-min 来检测语言，'en' 代表英语
+  return franc(text) === 'eng';
 }
