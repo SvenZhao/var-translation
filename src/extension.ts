@@ -3,7 +3,7 @@
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
 import translatePlatforms, { EengineType } from './inc/translate';
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
-import { isEnglish } from './utils';
+import { isChinese } from './utils';
 
 interface IWordResult {
   engine: EengineType;
@@ -64,27 +64,20 @@ export function deactivate() { }
 async function getTranslateResult(srcText: string, to: string) {
   const engine: EengineType = workspace.getConfiguration('varTranslation').translationEngine;
   const cache = translateCacheWords.find((item) => item.engine === engine && item.srcText === srcText);
-
   if (cache) {
     window.setStatusBarMessage(`${packageJSON.displayName} 使用缓存: ${srcText}`, 2000);
     return cache.result;
   }
-
   const translate = translatePlatforms[engine] || translatePlatforms.google;
-  try {
-    window.setStatusBarMessage(`${engine} 正在翻译: ${srcText}`, 2000);
-    const res = await translate(srcText, to);
-    const result = res.text;
+  window.setStatusBarMessage(`${engine} 正在翻译到${to}: ${srcText}`, 2000);
+  srcText = to === 'zh' ? noCase(srcText) : srcText
+  const res = await translate(srcText, to);
+  const result = res.text;
 
-    if (result) {
-      translateCacheWords.push({ engine, srcText, result });
-    }
-    return result;
-  } catch (error) {
-    console.error(error);
-    window.showInformationMessage(`${engine}翻译异常,请检查网络或引擎token配置是否正确`);
-    return null;
+  if (result) {
+    translateCacheWords.push({ engine, srcText, result });
   }
+  return result;
 }
 
 /**
@@ -109,13 +102,11 @@ async function main() {
 
   for (const selection of editor.selections) {
     const selected = editor.document.getText(selection);
-    const isEn = isEnglish(selected);
-    const to = isEn ? 'zh' : 'en';
-
+    const isZh = isChinese(selected);
+    const to = isZh ? 'en' : 'zh';
     // 获取翻译结果或直接使用原文本
-    const translated: string = isEn ? await getTranslateResult(selected, to) : await getTranslateResult(selected, 'en');
-    const word = isEn ? selected : translated;
-
+    const translated: string = await getTranslateResult(selected, to);
+    const word = isZh ? translated : selected
     if (!word) return;
 
     const userSelected = await vscodeSelect(word, [{ label: translated, description: '翻译' }]);
@@ -138,8 +129,8 @@ const typeTranslation = async (type: string) => {
 
   for (const selection of editor.selections) {
     const selected = editor.document.getText(selection);
-    const isEn = isEnglish(selected);
-    const word = isEn ? selected : await getTranslateResult(selected, 'en');
+    const isZh = isChinese(selected);
+    const word = isZh ? await getTranslateResult(selected, 'en') : selected;
 
     if (word) {
       editor.edit((builder) => builder.replace(selection, changeCase.handle(word)));

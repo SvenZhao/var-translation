@@ -1,6 +1,4 @@
-import { franc } from 'franc-min';
-
-export function isEnglish(text: string): boolean {
-  // 使用 franc-min 来检测语言，'en' 代表英语
-  return franc(text) === 'eng';
+export function isChinese(text: string): boolean {
+  const regex = /[\u4e00-\u9fa5]/;
+  return regex.test(text);
 }
