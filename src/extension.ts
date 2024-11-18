@@ -2,8 +2,8 @@
 /* eslint-disable no-await-in-loop */
 import { window, ExtensionContext, commands, QuickPickItem, QuickPickOptions, workspace } from 'vscode';
 import translatePlatforms, { EengineType } from './inc/translate';
-import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
-import { isChinese } from './utils';
+import { changeCaseMap, isChinese } from './utils';
+import { noCase } from 'change-case';
 
 interface IWordResult {
   engine: EengineType;
@@ -13,22 +13,10 @@ interface IWordResult {
 
 /** 翻译的内容缓存防止多次请求 */
 const translateCacheWords: IWordResult[] = [];
-const changeCaseMap = [
-  { name: 'camelCase', handle: camelCase, description: 'camelCase 驼峰(小)' },
-  { name: 'pascalCase', handle: pascalCase, description: 'pascalCase 驼峰(大)' },
-  { name: 'snakeCase', handle: snakeCase, description: 'snakeCase 下划线' },
-  { name: 'paramCase', handle: paramCase, description: 'paramCase 中划线(小)' },
-  { name: 'headerCase', handle: headerCase, description: 'headerCase 中划线(大)' },
-  { name: 'noCase', handle: noCase, description: 'noCase 分词(小)' },
-  { name: 'capitalCase', handle: capitalCase, description: 'capitalCase 分词(大)' },
-  { name: 'dotCase', handle: dotCase, description: 'dotCase 对象属性' },
-  { name: 'pathCase', handle: pathCase, description: 'pathCase 文件路径' },
-  { name: 'constantCase', handle: constantCase, description: 'constantCase 常量' },
-];
 
 let packageJSON: any;
+
 const checkUpdate = async (context: ExtensionContext) => {
-  packageJSON = context.extension.packageJSON;
   const { globalState } = context;
   const CACHE_KEY = `${packageJSON.name}-${packageJSON.version}`;
   const version = globalState.get(CACHE_KEY);
@@ -49,6 +37,7 @@ const checkUpdate = async (context: ExtensionContext) => {
 };
 
 export function activate(context: ExtensionContext) {
+  packageJSON = context.extension.packageJSON;
   checkUpdate(context);
   context.subscriptions.push(commands.registerCommand('extension.varTranslation', main));
   changeCaseMap.forEach((item) => {
@@ -59,9 +48,11 @@ export function activate(context: ExtensionContext) {
 export function deactivate() { }
 
 /**
- * 获取翻译引擎结果
+ * 获取翻译结果或缓存翻译结果
+ * @param srcText 原始文本
+ * @param to 目标语言
  */
-async function getTranslateResult(srcText: string, to: string) {
+const getTranslation = async (srcText: string, to: string) => {
   const engine: EengineType = workspace.getConfiguration('varTranslation').translationEngine;
   const cache = translateCacheWords.find((item) => item.engine === engine && item.srcText === srcText);
   if (cache) {
@@ -70,33 +61,44 @@ async function getTranslateResult(srcText: string, to: string) {
   }
   const translate = translatePlatforms[engine] || translatePlatforms.google;
   window.setStatusBarMessage(`${engine} 正在翻译到${to}: ${srcText}`, 2000);
-  srcText = to === 'zh' ? noCase(srcText) : srcText
+  /* 翻译时 转换成分词的小写形式 */
+  srcText = to === 'zh' ? noCase(srcText) : srcText;
   const res = await translate(srcText, to);
   const result = res.text;
-
   if (result) {
     translateCacheWords.push({ engine, srcText, result });
   }
   return result;
-}
+};
 
 /**
- * 用户选择转换形式
- * @param word 需要转换的单词
- * @return  用户选择
+ * 执行选择替换操作
+ * @param word 需要处理的单词
+ * @param quickPickItems 可选的快速选择项
+ * @returns 用户选择的文本
  */
-async function vscodeSelect(word: string, quickPickItems: QuickPickItem[] = []): Promise<string | undefined> {
+const selectAndReplace = async (word: string, quickPickItems: QuickPickItem[] = []): Promise<string | undefined> => {
   const wordItems = changeCaseMap.map((item) => ({ label: item.handle(word), description: item.description }));
   const items: QuickPickItem[] = [...wordItems, ...quickPickItems];
   const opts: QuickPickOptions = { matchOnDescription: true, placeHolder: '选择替换' };
   const selections = await window.showQuickPick(items, opts);
   return selections?.label;
-}
+};
+
+/**
+ * 编辑器中替换选中的文本
+ * @param editor 编辑器实例
+ * @param selection 选中的范围
+ * @param newText 替换后的文本
+ */
+const replaceTextInEditor = (editor: any, selection: any, newText: string) => {
+  editor.edit((builder: any) => builder.replace(selection, newText));
+};
 
 /**
  * 主翻译逻辑
  */
-async function main() {
+const main = async () => {
   const editor = window.activeTextEditor;
   if (!editor) return;
 
@@ -105,17 +107,16 @@ async function main() {
     const isZh = isChinese(selected);
     const to = isZh ? 'en' : 'zh';
     // 获取翻译结果或直接使用原文本
-    const translated: string = await getTranslateResult(selected, to);
-    const word = isZh ? translated : selected
+    const translated: string = await getTranslation(selected, to);
+    const word = isZh ? translated : selected;
     if (!word) return;
 
-    const userSelected = await vscodeSelect(word, [{ label: translated, description: '翻译' }]);
-
+    const userSelected = await selectAndReplace(word, [{ label: translated, description: '翻译' }]);
     if (userSelected) {
-      editor.edit((builder) => builder.replace(selection, userSelected));
+      replaceTextInEditor(editor, selection, userSelected);
     }
   }
-}
+};
 
 /**
  * 转换变量名格式
@@ -130,10 +131,9 @@ const typeTranslation = async (type: string) => {
   for (const selection of editor.selections) {
     const selected = editor.document.getText(selection);
     const isZh = isChinese(selected);
-    const word = isZh ? await getTranslateResult(selected, 'en') : selected;
-
+    const word = isZh ? await getTranslation(selected, 'en') : selected;
     if (word) {
-      editor.edit((builder) => builder.replace(selection, changeCase.handle(word)));
+      replaceTextInEditor(editor, selection, changeCase.handle(word));
     }
   }
 };
