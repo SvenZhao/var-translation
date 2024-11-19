@@ -18,21 +18,23 @@ let packageJSON: any;
 
 const checkUpdate = async (context: ExtensionContext) => {
   const { globalState } = context;
-  const CACHE_KEY = `${packageJSON.name}-${packageJSON.version}`;
-  const version = globalState.get(CACHE_KEY);
-  const extensionVersion = packageJSON.version;
+  const CACHE_KEY_PREFIX = `${packageJSON.name}-version`;
+  const lastCheckedVersion = globalState.get<string>(CACHE_KEY_PREFIX);
+  const currentVersion = packageJSON.version;
+  if (lastCheckedVersion !== currentVersion) {
+    globalState.update(CACHE_KEY_PREFIX, currentVersion);
 
-  if (version !== extensionVersion) {
-    globalState.update(CACHE_KEY, extensionVersion);
-    const contentText = `
-    ${packageJSON.displayName}更新:\r
-    新增 英汉互译\r,
-    新增 翻译结果展示\r,
-    新增 chagpt 支持自定义模型\r,
-    优化 chagpt提示语 更适合开发场景\r,
-    优化 展示翻译异常时候错误消息 方便找原因\r,
+    const updateContent = `
+    **${packageJSON.displayName} 更新**:
+    🚀 **新增功能**:
+    - 英汉互译支持
+    - 翻译结果展示界面优化
+    - ChatGPT 支持自定义模型
+    🛠️ **优化改进**:
+    - ChatGPT 提示语优化，更适合开发场景
+    - 翻译异常时，展示更详细的错误消息，帮助调试
     `;
-    window.showInformationMessage(contentText);
+    window.showInformationMessage(updateContent)
   }
 };
 

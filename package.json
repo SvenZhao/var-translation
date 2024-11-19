@@ -1,7 +1,7 @@
 {
   "name": "var-translation",
   "displayName": "驼峰翻译助手",
-  "description": "纠结怎么取变量? 中文一键翻译转换成常用大小驼峰等格式",
+  "description": "快速将中文变量翻译名转换为多种常用驼峰命名格式（如 camelCase、PascalCase、snake_case 等）。同时，支持 腾讯 百度 OpenAI API 自定义翻译模型提升开发效率。",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
   "version": "0.13.54",
@@ -18,7 +18,8 @@
     "var",
     "翻译",
     "变量",
-    "驼峰"
+    "驼峰",
+    "var-translation"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -108,6 +109,7 @@
         }
       ]
     },
+
     "configuration": {
       "type": "object",
       "title": "驼峰翻译配置",
