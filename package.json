@@ -36,7 +36,7 @@
     "commands": [
       {
         "command": "extension.varTranslation",
-        "title": "驼峰翻译选择翻译",
+        "title": "驼峰命名转换",
         "when": "editorTextFocus",
         "category": "var-translation"
       },
@@ -101,15 +101,77 @@
         "category": "var-translation"
       }
     ],
+    "submenus": [
+      {
+        "id": "var-translation.menulist",
+        "label": "驼峰翻译"
+      }
+    ],
     "menus": {
       "editor/context": [
         {
-          "when": "editorTextFocus",
-          "command": "extension.varTranslation"
+          "submenu": "var-translation.menulist",
+          "when": "editorTextFocus"
+        }
+      ],
+      "var-translation.menulist": [
+        {
+          "command": "extension.varTranslation",
+          "group": "1",
+          "title": "选择翻译"
+        },
+        {
+          "command": "extension.varTranslation.camelCase",
+          "group": "2",
+          "title": "camelCase 驼峰(小) camelCase"
+        },
+        {
+          "command": "extension.varTranslation.pascalCase",
+          "group": "3",
+          "title": "pascalCase 驼峰(大) PascalCase"
+        },
+        {
+          "command": "extension.varTranslation.paramCase",
+          "group": "4",
+          "title": "paramCase 中划线(小) param-case"
+        },
+        {
+          "command": "extension.varTranslation.snakeCase",
+          "group": "5",
+          "title": "snakeCase 下划线 snake_case"
+        },
+        {
+          "command": "extension.varTranslation.constantCase",
+          "group": "6",
+          "title": "constantCase 常量 CONSTANT_CASE"
+        },
+        {
+          "command": "extension.varTranslation.capitalCase",
+          "group": "7",
+          "title": "capitalCase 分词(大) Capital Case"
+        },
+        {
+          "command": "extension.varTranslation.dotCase",
+          "group": "8",
+          "title": "dotCase 对象属性 dot case"
+        },
+        {
+          "command": "extension.varTranslation.headerCase",
+          "group": "9",
+          "title": "headerCase 中划线(大) Header-Case"
+        },
+        {
+          "command": "extension.varTranslation.noCase",
+          "group": "10",
+          "title": "noCase 分词(小) no case"
+        },
+        {
+          "command": "extension.varTranslation.pathCase",
+          "group": "11",
+          "title": "pathCase 文件路径 path/case"
         }
       ]
     },
-
     "configuration": {
       "type": "object",
       "title": "驼峰翻译配置",

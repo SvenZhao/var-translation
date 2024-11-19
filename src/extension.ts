@@ -33,6 +33,7 @@ const checkUpdate = async (context: ExtensionContext) => {
     🛠️ **优化改进**:
     - ChatGPT 提示语优化，更适合开发场景
     - 翻译异常时，展示更详细的错误消息，帮助调试
+    - 加入右键子命令菜单
     `;
     window.showInformationMessage(updateContent)
   }
