@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.55](https://github.com/SvenZhao/var-translation/compare/v0.13.54...v0.13.55) (2024-11-20)
+
+
+### Features
+
+* 加入子菜单 ([af90eb4](https://github.com/SvenZhao/var-translation/commit/af90eb489a8962b3de03a1454e3b43ea8c2268d0))
+* 文案 ([d22bd02](https://github.com/SvenZhao/var-translation/commit/d22bd027bd7c9a5358f47441e1bef077b8a75b6a))
+* 文案调整 ([fcf79e9](https://github.com/SvenZhao/var-translation/commit/fcf79e9efc42bdf5f6f2a1c121689c495b8d5ad3))
+
 ### [0.13.54](https://github.com/SvenZhao/var-translation/compare/v0.13.53...v0.13.54) (2024-11-18)
 
 
