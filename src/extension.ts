@@ -25,15 +25,12 @@ const checkUpdate = async (context: ExtensionContext) => {
     globalState.update(CACHE_KEY_PREFIX, currentVersion);
 
     const updateContent = `
-    **${packageJSON.displayName} 更新**:
-    🚀 **新增功能**:
-    - 英汉互译支持
-    - 翻译结果展示界面优化
-    - ChatGPT 支持自定义模型
-    🛠️ **优化改进**:
-    - ChatGPT 提示语优化，更适合开发场景
-    - 翻译异常时，展示更详细的错误消息，帮助调试
+   **${packageJSON.displayName} 更新**:
     - 加入右键子命令菜单
+    - 翻译异常时，展示更详细的错误消息，帮助调试
+    - ChatGPT 提示语优化，更适合开发场景
+    - ChatGPT 支持自定义模型
+    - 英汉互译支持
     `;
     window.showInformationMessage(updateContent)
   }
