@@ -6,7 +6,7 @@
   "icon": "images/logo.png",
   "version": "0.13.60",
   "engines": {
-    "vscode": "^1.50.0"
+    "vscode": "^1.90.0"
   },
   "categories": [
     "Other"
@@ -98,6 +98,11 @@
         "command": "extension.varTranslation.pathCase",
         "title": "pathCase 文件路径 path/case",
         "when": "editorTextFocus",
+        "category": "var-translation"
+      },
+      {
+        "command": "extension.varTranslation.selectCopilotModel",
+        "title": "选择 Copilot 模型",
         "category": "var-translation"
       }
     ],
@@ -221,6 +226,11 @@
           "default": "http://localhost:5000/translate",
           "description": "deeplx API"
         },
+        "varTranslation.copilot.model": {
+          "type": "string",
+          "default": "",
+          "description": "自定义 Copilot 模型 ID，为空则自动选择最具表现力的可用模型。可以通过命令 '驼峰翻译: 选择 Copilot 模型' 自动获取并设置。"
+        },
         "varTranslation.translationEngine": {
           "type": "string",
           "enum": [
@@ -229,7 +239,8 @@
             "tencent",
             "ChatGpt",
             "libretranslate",
-            "deeplx"
+            "deeplx",
+            "copilot"
           ],
           "enumDescriptions": [
             "谷歌中国",
@@ -237,7 +248,8 @@
             "腾讯翻译君",
             "ChatGpt",
             "自建翻译",
-            "deeplx"
+            "deeplx",
+            "VS Code Copilot"
           ],
           "default": "google",
           "description": "翻译引擎"
@@ -265,7 +277,7 @@
     "@types/google-translate-api": "^2.3.1",
     "@types/mocha": "^8.0.4",
     "@types/node": "^12.11.7",
-    "@types/vscode": "^1.50.0",
+    "@types/vscode": "^1.90.0",
     "f2elint": "^4.9.0",
     "glob": "^7.1.6",
     "mocha": "^8.1.3",

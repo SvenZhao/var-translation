@@ -1,4 +1,4 @@
-import { window, ExtensionContext, commands, QuickPickItem, Selection } from 'vscode';
+import { window, ExtensionContext, commands, QuickPickItem, Selection, lm, workspace } from 'vscode';
 import { changeCaseMap } from './utils';
 import AsyncQuickPick from './utils/asyncPick';
 import VarTranslate from './translate';
@@ -28,6 +28,7 @@ export function activate(context: ExtensionContext) {
   packageJSON = context.extension.packageJSON;
   checkUpdate(context);
   context.subscriptions.push(commands.registerCommand('extension.varTranslation', main));
+  context.subscriptions.push(commands.registerCommand('extension.varTranslation.selectCopilotModel', selectCopilotModel));
   changeCaseMap.forEach((item) => {
     context.subscriptions.push(commands.registerCommand(`extension.varTranslation.${item.name}`, () => typeTranslation(item.name)));
   });
@@ -114,3 +115,41 @@ const typeTranslation = async (type: string) => {
     }
   }
 };
+
+/**
+ * 自动获取 Copilot 模型列表供用户选择
+ */
+async function selectCopilotModel() {
+  try {
+    // @ts-ignore
+    if (typeof lm === 'undefined') {
+      window.showErrorMessage('当前 VS Code 版本不支持 Copilot API');
+      return;
+    }
+
+    // @ts-ignore
+    const models = await lm.selectChatModels();
+    if (!models || models.length === 0) {
+      window.showErrorMessage('未找到可用的 Copilot 模型，请确保已安装 GitHub Copilot 扩展并已登录');
+      return;
+    }
+
+    const items = models.map((m: any) => ({
+      label: m.name || m.id,
+      description: `${m.vendor} - ${m.family}`,
+      detail: m.id,
+    }));
+
+    const selected = await window.showQuickPick(items, {
+      placeHolder: '请选择用于翻译的 Copilot 模型',
+      title: '选择 Copilot 模型',
+    });
+
+    if (selected) {
+      await workspace.getConfiguration('varTranslation').update('copilot.model', selected.detail, true);
+      window.showInformationMessage(`已设置 Copilot 翻译模型为: ${selected.label}`);
+    }
+  } catch (error: any) {
+    window.showErrorMessage(`获取模型列表失败: ${error.message}`);
+  }
+}
