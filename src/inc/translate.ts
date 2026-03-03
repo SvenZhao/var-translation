@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-shadow */
 import axios from 'axios';
-import { window, workspace } from 'vscode';
+import { window, workspace, lm, LanguageModelChatMessage, CancellationTokenSource } from 'vscode';
 import { OpenAIApi, Configuration } from 'openai';
 
 // 引入翻译引擎
@@ -17,6 +17,7 @@ export enum EengineType {
   ChatGpt = 'ChatGpt',
   libretranslate = 'libretranslate',
   deeplx = 'deeplx',
+  copilot = 'copilot',
 }
 
 // 获取配置的密钥
@@ -136,6 +137,53 @@ const engines = {
         return { text: '' };
       }
       return { text: response.data.data };
+    } catch (error) {
+      return handleError(error);
+    }
+  },
+
+  async copilot(src: string, to: string) {
+    try {
+      // @ts-ignore
+      if (typeof lm === 'undefined') {
+        window.showErrorMessage('当前 VS Code 版本不支持 Copilot API (Language Model API)');
+        return { text: '' };
+      }
+
+      const { model: modelId } = workspace.getConfiguration('varTranslation').copilot || {};
+      let model;
+
+      // @ts-ignore
+      if (modelId) {
+        // @ts-ignore
+        const models = await lm.selectChatModels({ id: modelId });
+        if (models.length > 0) {
+          model = models[0];
+        }
+      }
+
+      if (!model) {
+        // @ts-ignore
+        const models = await lm.selectChatModels({ family: 'gpt-4o' });
+        // @ts-ignore
+        [model] = models.length > 0 ? models : await lm.selectChatModels();
+      }
+
+      if (!model) {
+        window.showErrorMessage('未找到可用的 Copilot 模型，请确保已安装 GitHub Copilot 扩展');
+        return { text: '' };
+      }
+
+      const messages = [
+        LanguageModelChatMessage.User(`你是专业的变量名翻译助手。请将变量名 "${src}" 翻译成${to}，只返回翻译文本，不要加引号和额外符号。`)
+      ];
+
+      const response = await model.sendRequest(messages, {}, new CancellationTokenSource().token);
+      let text = '';
+      for await (const fragment of response.text) {
+        text += fragment;
+      }
+      return { text: text.trim() };
     } catch (error) {
       return handleError(error);
     }
