@@ -1,89 +1,103 @@
 import { capitalCase, snakeCase } from "change-case";
 import { window, workspace } from "vscode";
-import { isChinese } from "../utils";
-import translatePlatforms, { EengineType } from "./engine";
+import { isEnglishOnly } from "../utils";
+import { engineRegistry, EengineType } from "./engines";
+import { TranslateLogger } from "./logger";
+import { t } from "../i18n";
 import { packageJSON } from "../extension";
 
-type Language = 'zh' | 'en';
 interface CacheItem {
-  engine: EengineType;
+  engine: string;
   key: string;
   result: string;
 }
 
-const LANGUAGE = {
-  ZH: 'zh' as Language,
-  EN: 'en' as Language,
-};
-
 class VarTranslator {
   private text = '';
   private cache = new Map<string, CacheItem>();
-  private config = workspace.getConfiguration('varTranslation')
+  private config = workspace.getConfiguration('varTranslation');
+
   constructor() {
-    // 注册配置更改监听器
     workspace.onDidChangeConfiguration((event) => {
-      // 检查特定配置项是否被修改
       if (event.affectsConfiguration('varTranslation')) {
-        this.config = workspace.getConfiguration('varTranslation')
-        this.showStatus(`用户更新配置`);
+        this.config = workspace.getConfiguration('varTranslation');
+        this.showStatus(t('engine.configUpdated'));
       }
     });
   }
-  get isChinese() {
-    return isChinese(this.text);
+
+  get isEnglish() {
+    return isEnglishOnly(this.text);
   }
 
-  private get targetLang(): Language {
-    return this.isChinese ? LANGUAGE.EN : LANGUAGE.ZH;
+  private get targetLang(): string {
+    if (this.isEnglish) {
+      return this.config.get<string>('targetLanguage') || 'zh';
+    }
+    return 'en';
   }
 
   private get cacheKey() {
-    return this.targetLang === LANGUAGE.ZH
+    return this.isEnglish
       ? snakeCase(this.text)
       : this.text;
   }
 
-  private get engine(): EengineType {
-    return this.config.translationEngine;
+  private get engineType(): string {
+    return this.config.translationEngine || EengineType.google;
   }
 
   private showStatus(message: string) {
-    const msg = `${packageJSON.displayName}: ${message}`
-    console.log(msg)
+    const msg = `${packageJSON.displayName}: ${message}`;
+    console.log(msg);
     window.setStatusBarMessage(msg, 2000);
   }
+
   setText(text: string) {
     this.text = text.trim();
   }
+
   async translate(): Promise<string> {
     if (!this.text) return '';
-    const cacheKey = `${this.engine}_${this.cacheKey}`;
+
+    const cacheKey = `${this.engineType}_${this.cacheKey}`;
     const cached = this.cache.get(cacheKey);
     if (cached) {
-      this.showStatus(`使用缓存: ${this.text}`);
+      this.showStatus(t('engine.cached', { text: this.text }));
       return cached.result;
     }
 
     try {
-      const engine = translatePlatforms[this.engine] || translatePlatforms.google;
-      const processedText = this.targetLang === LANGUAGE.ZH
+      const engine = engineRegistry[this.engineType] || engineRegistry[EengineType.google];
+      if (!engine) {
+        this.showStatus(t('engine.notFound'));
+        TranslateLogger.error(`Engine not found: ${this.engineType}`);
+        return '';
+      }
+
+      const processedText = this.isEnglish
         ? capitalCase(this.text)
         : this.text;
 
-      this.showStatus(`${this.engine}翻译: ${processedText} 到 ${this.targetLang}`);
-      let { text: result } = await engine(processedText, this.targetLang);
-      result=result.replace(/["\n\r]/g, '')
+      this.showStatus(t('engine.translating', {
+        engine: this.engineType,
+        text: processedText,
+        target: this.targetLang,
+      }));
+
+      let { text: result } = await engine.execute(processedText, this.targetLang);
+      result = result.replace(/["\n\r]/g, '');
+
       if (result) {
         this.cache.set(cacheKey, {
-          engine: this.engine,
+          engine: this.engineType,
           key: this.cacheKey,
-          result
+          result,
         });
       }
       return result;
     } catch (error: any) {
-      this.showStatus(`翻译失败: ${error.message}`);
+      this.showStatus(t('engine.failed', { message: error.message }));
       return '';
     }
   }

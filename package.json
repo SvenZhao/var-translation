@@ -4,7 +4,7 @@
   "description": "快速将中文变量翻译名转换为多种常用驼峰命名格式（如 camelCase、PascalCase、snake_case 等）。同时，支持 腾讯 百度 OpenAI API 自定义翻译模型提升开发效率。",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "0.13.60",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -104,6 +104,11 @@
         "command": "extension.varTranslation.selectCopilotModel",
         "title": "选择 Copilot 模型",
         "category": "var-translation"
+      },
+      {
+        "command": "extension.varTranslation.configEngine",
+        "title": "配置翻译引擎",
+        "category": "var-translation"
       }
     ],
     "submenus": [
@@ -181,78 +186,139 @@
       "type": "object",
       "title": "驼峰翻译配置",
       "properties": {
-        "varTranslation.baiduSecret": {
+        "varTranslation.translationEngine": {
           "type": "string",
-          "default": "",
-          "description": "百度翻译密钥 使用逗号隔开例如 appid,scretkey 申请地址看文档"
+          "enum": [
+            "copilot",
+            "ChatGpt",
+            "google",
+            "bing",
+            "deeplx",
+            "baidu",
+            "tencent",
+            "libretranslate"
+          ],
+          "enumDescriptions": [
+            "VS Code Copilot（零配置，推荐）",
+            "ChatGPT / OpenAI 兼容",
+            "谷歌翻译（免费）",
+            "Bing / Azure Translator",
+            "DeepLX",
+            "百度翻译",
+            "腾讯翻译君",
+            "LibreTranslate 自建翻译"
+          ],
+          "default": "google",
+          "description": "翻译引擎",
+          "order": 0
         },
-        "varTranslation.tencentSecret": {
+        "varTranslation.targetLanguage": {
           "type": "string",
-          "default": "",
-          "description": "腾讯翻译君密钥 使用逗号隔开例如 secretId,secretKey 申请地址看文档"
-        },
-        "varTranslation.googleTld": {
-          "type": "string",
-          "default": "",
-          "description": "用于在调用API时使用的谷歌翻译的顶级域名:https://translate.google.{Tld} 默认为com"
-        },
-        "varTranslation.openai.apiKey": {
-          "type": "string",
-          "default": "",
-          "description": "官方ApiKey是sk-开头的字符串"
-        },
-        "varTranslation.openai.apiBaseUrl": {
-          "type": "string",
-          "default": "",
-          "description": "OpenAI API基础URL的可选覆盖。如果您自定义了它，请确保具有相同的格式，例如以https://开头且没有尾随斜杠。补全端点的后缀将在内部添加，例如：${apiBaseUrl}/chat/completions，参考官方路线：https://api.openai.com/v1。"
-        },
-        "varTranslation.openai.model": {
-          "type": "string",
-          "default": "gpt-3.5-turbo",
-          "description": "自定义模型"
-        },
-        "varTranslation.libretranslate.apiBaseUrl": {
-          "type": "string",
-          "default": "http://localhost:5000/translate",
-          "description": "libretranslate api, libretranslate 仓库地址: https://github.com/LibreTranslate/LibreTranslate"
-        },
-        "varTranslation.libretranslate.apiKey": {
-          "type": "string",
-          "default": "",
-          "description": "libretranslate api_key,如果开启了key"
-        },
-        "varTranslation.deeplx.apiBaseUrl": {
-          "type": "string",
-          "default": "http://localhost:5000/translate",
-          "description": "deeplx API"
+          "default": "zh",
+          "description": "英文变量名翻译的目标语言（如 zh 中文、ja 日文、ko 韩文、fr 法文、de 德文等）",
+          "order": 1
         },
         "varTranslation.copilot.model": {
           "type": "string",
           "default": "",
-          "description": "自定义 Copilot 模型 ID，为空则自动选择最具表现力的可用模型。可以通过命令 '驼峰翻译: 选择 Copilot 模型' 自动获取并设置。"
+          "description": "Copilot 模型 ID，留空自动选择。可通过命令「选择 Copilot 模型」设置",
+          "order": 10
         },
-        "varTranslation.translationEngine": {
+        "varTranslation.openai.apiKey": {
           "type": "string",
-          "enum": [
-            "google",
-            "baidu",
-            "tencent",
-            "ChatGpt",
-            "libretranslate",
-            "deeplx",
-            "copilot"
-          ],
-          "enumDescriptions": [
-            "谷歌中国",
-            "百度",
-            "腾讯翻译君",
-            "ChatGpt",
-            "自建翻译",
-            "deeplx",
-            "VS Code Copilot"
-          ],
-          "default": "google",
-          "description": "翻译引擎"
+          "default": "",
+          "description": "OpenAI API Key（sk- 开头的字符串）",
+          "order": 20
+        },
+        "varTranslation.openai.apiBaseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API 基础 URL（如 https://api.openai.com/v1），留空使用官方地址",
+          "order": 21
+        },
+        "varTranslation.openai.model": {
+          "type": "string",
+          "default": "gpt-3.5-turbo",
+          "description": "OpenAI 模型名称",
+          "order": 22
+        },
+        "varTranslation.google.tld": {
+          "type": "string",
+          "default": "com",
+          "description": "谷歌翻译的顶级域名，如 com、cn 等",
+          "order": 30
+        },
+        "varTranslation.bing.subscriptionKey": {
+          "type": "string",
+          "default": "",
+          "description": "Azure Translator 订阅密钥（每月 200 万字符免费额度）",
+          "order": 40
+        },
+        "varTranslation.bing.region": {
+          "type": "string",
+          "default": "global",
+          "description": "Azure Translator 区域（如 global、eastasia 等）",
+          "order": 41
+        },
+        "varTranslation.deeplx.apiBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:5000/translate",
+          "description": "DeepLX API 地址",
+          "order": 50
+        },
+        "varTranslation.baidu.appId": {
+          "type": "string",
+          "default": "",
+          "description": "百度翻译 App ID（申请地址：https://hcfy.app/docs/services/baidu-api）",
+          "order": 60
+        },
+        "varTranslation.baidu.secretKey": {
+          "type": "string",
+          "default": "",
+          "description": "百度翻译 Secret Key",
+          "order": 61
+        },
+        "varTranslation.tencent.secretId": {
+          "type": "string",
+          "default": "",
+          "description": "腾讯翻译君 Secret ID（申请地址：https://hcfy.app/docs/services/qq-api）",
+          "order": 70
+        },
+        "varTranslation.tencent.secretKey": {
+          "type": "string",
+          "default": "",
+          "description": "腾讯翻译君 Secret Key",
+          "order": 71
+        },
+        "varTranslation.libretranslate.apiBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:5000/translate",
+          "description": "LibreTranslate API 地址（仓库：https://github.com/LibreTranslate/LibreTranslate）",
+          "order": 80
+        },
+        "varTranslation.libretranslate.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "LibreTranslate API Key（如果开启了 Key 验证）",
+          "order": 81
+        },
+        "varTranslation.baiduSecret": {
+          "type": "string",
+          "default": "",
+          "description": "（已废弃，请使用 baidu.appId 和 baidu.secretKey）百度翻译密钥",
+          "deprecationMessage": "此配置项已废弃，请使用 varTranslation.baidu.appId 和 varTranslation.baidu.secretKey"
+        },
+        "varTranslation.tencentSecret": {
+          "type": "string",
+          "default": "",
+          "description": "（已废弃，请使用 tencent.secretId 和 tencent.secretKey）腾讯翻译密钥",
+          "deprecationMessage": "此配置项已废弃，请使用 varTranslation.tencent.secretId 和 varTranslation.tencent.secretKey"
+        },
+        "varTranslation.googleTld": {
+          "type": "string",
+          "default": "",
+          "description": "（已废弃，请使用 google.tld）谷歌翻译顶级域名",
+          "deprecationMessage": "此配置项已废弃，请使用 varTranslation.google.tld"
         }
       }
     }
@@ -262,29 +328,22 @@
     "compile": "webpack --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
     "watch": "webpack --watch --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
     "package": "webpack --mode production --config ./build/node-extension.webpack.config.js",
-    "test-compile": "tsc -p ./",
-    "test-watch": "tsc -watch -p ./",
-    "pretest": "npm run test-compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js",
+    "test": "node scripts/test-engine.js",
     "release": "standard-version",
     "publish": "npm run release && vsce publish",
     "f2elint-scan": "f2elint scan",
     "f2elint-fix": "f2elint fix"
   },
   "devDependencies": {
-    "@types/glob": "^7.1.3",
     "@types/google-translate-api": "^2.3.1",
-    "@types/mocha": "^8.0.4",
-    "@types/node": "^12.11.7",
+    "@types/node": "^20.0.0",
     "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^2.4.0",
     "f2elint": "^4.9.0",
-    "glob": "^7.1.6",
-    "mocha": "^8.1.3",
     "standard-version": "^9.1.0",
-    "ts-loader": "^8.0.11",
-    "typescript": "^4.1.2",
-    "vscode-test": "^1.4.1",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.5.0",
     "webpack": "^5.10.0",
     "webpack-cli": "^4.2.0"
   },
@@ -293,7 +352,7 @@
     "axios": "^1.6.5",
     "change-case": "^4.1.2",
     "node-baidu-translate": "^0.1.0",
-    "openai": "^3.3.0",
+    "openai": "^4.0.0",
     "tencentcloud-sdk-nodejs": "^4.0.331"
   },
   "repository": {

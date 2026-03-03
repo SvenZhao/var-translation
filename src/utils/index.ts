@@ -1,7 +1,12 @@
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
+
 export function isChinese(text: string): boolean {
   const regex = /[\u4e00-\u9fa5]/;
   return regex.test(text);
+}
+
+export function isEnglishOnly(text: string): boolean {
+  return /^[a-zA-Z0-9\s\-_./]+$/.test(text);
 }
 
 export const changeCaseMap = [

@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/SvenZhao/var-translation/compare/v0.13.60...v1.0.0) (2026-03-03)
+
+### ⚠ BREAKING CHANGES
+
+* 配置项结构调整：`baiduSecret` → `baidu.appId` + `baidu.secretKey`，`tencentSecret` → `tencent.secretId` + `tencent.secretKey`，`googleTld` → `google.tld`（旧配置会自动迁移）
+
+### Features
+
+* **引擎架构重构**：将所有翻译引擎拆分为独立模块，统一接口，内置日志和耗时统计
+* **新增 Copilot 引擎**：零配置，直接使用 VS Code Copilot 进行翻译
+* **新增 Bing 引擎**：基于 Azure Translator API，每月 200 万字符免费额度
+* **新增引导式配置**：通过命令面板「配置翻译引擎」快速完成引擎配置并自动测试连通性
+* **多语言翻译**：新增 `targetLanguage` 配置，支持日文、韩文、法文、德文等多种目标语言
+* **国际化**：UI 文案支持中英双语，自动跟随 VS Code 语言设置
+* **配置分组**：设置项按引擎分组排列，配置更清晰
+* **旧配置自动迁移**：升级后自动将旧的平铺配置迁移到新的分组结构
+* **Output Channel 日志**：翻译过程可在「驼峰翻译助手」输出面板中查看详细日志
+* **引擎测试脚本**：新增 `scripts/test-engine.js`，PR 贡献者可脱离 VS Code 独立测试引擎
+
+### Build
+
+* **TypeScript** 4.x → 5.x
+* **OpenAI SDK** v3 → v4（API 完全重写适配）
+* **@types/node** 12 → 20
+* **ts-loader** 8 → 9
+* 移除废弃依赖：mocha、glob、vscode-test
+* 新增 @vscode/test-electron
+* 修复 ESLint 配置（移除废弃的 prettier/@typescript-eslint）
+
 ### [0.13.60](https://github.com/SvenZhao/var-translation/compare/v0.13.59...v0.13.60) (2025-06-24)
 
 ### [0.13.59](https://github.com/SvenZhao/var-translation/compare/v0.13.58...v0.13.59) (2025-06-24)
