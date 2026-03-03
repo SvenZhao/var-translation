@@ -109,6 +109,21 @@
         "command": "extension.varTranslation.configEngine",
         "title": "配置翻译引擎",
         "category": "var-translation"
+      },
+      {
+        "command": "extension.varTranslation.switchEngine",
+        "title": "切换翻译引擎",
+        "category": "var-translation"
+      },
+      {
+        "command": "extension.varTranslation.history",
+        "title": "翻译历史",
+        "category": "var-translation"
+      },
+      {
+        "command": "extension.varTranslation.clearCache",
+        "title": "清空翻译缓存",
+        "category": "var-translation"
       }
     ],
     "submenus": [

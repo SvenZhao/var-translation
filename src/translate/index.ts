@@ -5,16 +5,10 @@ import { engineRegistry, EengineType } from "./engines";
 import { TranslateLogger } from "./logger";
 import { t } from "../i18n";
 import { packageJSON } from "../extension";
-
-interface CacheItem {
-  engine: string;
-  key: string;
-  result: string;
-}
+import { getCached, setCache } from "./cache";
 
 class VarTranslator {
   private text = '';
-  private cache = new Map<string, CacheItem>();
   private config = workspace.getConfiguration('varTranslation');
 
   constructor() {
@@ -37,10 +31,8 @@ class VarTranslator {
     return 'en';
   }
 
-  private get cacheKey() {
-    return this.isEnglish
-      ? snakeCase(this.text)
-      : this.text;
+  private get normalizedText(): string {
+    return this.isEnglish ? snakeCase(this.text) : this.text;
   }
 
   private get engineType(): string {
@@ -60,11 +52,10 @@ class VarTranslator {
   async translate(): Promise<string> {
     if (!this.text) return '';
 
-    const cacheKey = `${this.engineType}_${this.cacheKey}`;
-    const cached = this.cache.get(cacheKey);
+    const cached = getCached(this.normalizedText, this.engineType, this.targetLang);
     if (cached) {
       this.showStatus(t('engine.cached', { text: this.text }));
-      return cached.result;
+      return cached;
     }
 
     try {
@@ -89,11 +80,7 @@ class VarTranslator {
       result = result.replace(/["\n\r]/g, '');
 
       if (result) {
-        this.cache.set(cacheKey, {
-          engine: this.engineType,
-          key: this.cacheKey,
-          result,
-        });
+        setCache(this.normalizedText, result, this.engineType, this.targetLang);
       }
       return result;
     } catch (error: any) {
