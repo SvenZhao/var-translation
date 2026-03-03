@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/SvenZhao/var-translation/compare/v0.13.60...v1.1.0) (2026-03-03)
+
+
+### Features
+
+* 增加翻译缓存及历史记录功能 ([670be6d](https://github.com/SvenZhao/var-translation/commit/670be6d9c2ea5031da0f5d755f5ac35d1a1b4f5d))
+
 ## [1.0.0](https://github.com/SvenZhao/var-translation/compare/v0.13.60...v1.0.0) (2026-03-03)
 
 ### ⚠ BREAKING CHANGES
