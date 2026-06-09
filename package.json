@@ -317,6 +317,12 @@
           "description": "LibreTranslate API Key（如果开启了 Key 验证）",
           "order": 81
         },
+        "varTranslation.autoTranslateFileName": {
+          "type": "boolean",
+          "default": true,
+          "description": "创建文件时自动翻译中文文件名",
+          "order": 90
+        },
         "varTranslation.baiduSecret": {
           "type": "string",
           "default": "",
