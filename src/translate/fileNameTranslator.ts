@@ -4,6 +4,9 @@ import { Uri, window, workspace } from 'vscode';
 import { containsChinese } from '../utils';
 import VarTranslator from './index';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const fs = require('fs');
+
 export class FileNameTranslator {
   private varTranslate = new VarTranslator();
 
@@ -162,12 +165,12 @@ export class FileNameTranslator {
       if (this.containsChinese(part)) {
         const dirPath = join(workspaceRoot, ...parts.slice(0, i));
         try {
-          const stat = await workspace.fs.stat(Uri.file(dirPath));
-          if (stat.type === 1) { // 1 = FileDirectory
-            // 检查目录是否为空
-            const files = await workspace.fs.readDirectory(Uri.file(dirPath));
+          // 使用Node.js fs模块检查目录是否为空并删除
+          const stat = fs.statSync(dirPath);
+          if (stat.isDirectory()) {
+            const files = fs.readdirSync(dirPath);
             if (files.length === 0) {
-              await workspace.fs.delete(Uri.file(dirPath));
+              fs.rmdirSync(dirPath);
             }
           }
         } catch {
