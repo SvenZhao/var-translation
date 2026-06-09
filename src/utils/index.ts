@@ -21,3 +21,8 @@ export const changeCaseMap = [
   { name: 'pathCase', handle: pathCase, description: 'pathCase 文件路径' },
   { name: 'constantCase', handle: constantCase, description: 'constantCase 常量' },
 ];
+
+export function containsChinese(text: string): boolean {
+  const chineseRegex = /[\u4e00-\u9fa5]/;
+  return chineseRegex.test(text);
+}
