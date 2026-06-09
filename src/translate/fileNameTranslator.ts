@@ -1,5 +1,5 @@
 import { pathCase } from 'change-case';
-import { basename, dirname, extname, join, relative } from 'path';
+import { basename, dirname, extname, join, relative, sep } from 'path';
 import { Uri, window, workspace } from 'vscode';
 import { containsChinese } from '../utils';
 import VarTranslator from './index';
@@ -15,13 +15,13 @@ export class FileNameTranslator {
   }
 
   /**
-   * 翻译文件路径
+   * 翻译单个部分
    */
-  async translateFilePath(chinesePath: string): Promise<string | undefined> {
-    this.varTranslate.setText(chinesePath);
+  async translatePart(chinesePart: string): Promise<string | undefined> {
+    this.varTranslate.setText(chinesePart);
     
     if (this.varTranslate.isEnglish) {
-      return chinesePath;
+      return chinesePart;
     }
     
     const translated = await this.varTranslate.translate();
@@ -29,8 +29,31 @@ export class FileNameTranslator {
       return undefined;
     }
     
-    // 使用pathCase格式保持路径结构
-    return pathCase(translated);
+    // 使用pathCase格式，然后取第一部分（避免添加斜杠）
+    const pathCased = pathCase(translated);
+    // pathCase会将空格等转换为斜杠，我们只需要第一个部分
+    return pathCased.split('/')[0] || pathCased;
+  }
+
+  /**
+   * 翻译文件路径（逐部分翻译）
+   */
+  async translateFilePath(chinesePath: string): Promise<string | undefined> {
+    // 按路径分隔符分割
+    const parts = chinesePath.split(sep);
+    const translatedParts: string[] = [];
+    
+    for (const part of parts) {
+      if (!part) continue; // 跳过空部分
+      
+      const translatedPart = await this.translatePart(part);
+      if (!translatedPart) {
+        return undefined;
+      }
+      translatedParts.push(translatedPart);
+    }
+    
+    return translatedParts.join(sep);
   }
 
   /**
@@ -98,7 +121,11 @@ export class FileNameTranslator {
       });
       
       if (selected && selected.label !== basename(relativePath)) {
+        // 确保目标目录存在
+        await workspace.fs.createDirectory(Uri.file(dirname(finalFilePath)));
         await workspace.fs.rename(file, Uri.file(finalFilePath));
+        // 尝试删除空的中文目录
+        await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
       }
     } catch {
       // 目标文件不存在，直接重命名
@@ -113,7 +140,39 @@ export class FileNameTranslator {
       });
       
       if (selected && selected.label !== basename(relativePath)) {
+        // 确保目标目录存在
+        await workspace.fs.createDirectory(Uri.file(dirname(newFilePath)));
         await workspace.fs.rename(file, Uri.file(newFilePath));
+        // 尝试删除空的中文目录
+        await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
+      }
+    }
+  }
+
+  /**
+   * 尝试删除空的中文目录
+   */
+  private async removeEmptyChineseDirs(file: Uri, workspaceRoot: string): Promise<void> {
+    const relativePath = relative(workspaceRoot, file.fsPath);
+    const parts = relativePath.split(sep);
+    
+    // 从最深的目录开始，逐级向上检查
+    for (let i = parts.length - 1; i > 0; i--) {
+      const part = parts[i];
+      if (this.containsChinese(part)) {
+        const dirPath = join(workspaceRoot, ...parts.slice(0, i));
+        try {
+          const stat = await workspace.fs.stat(Uri.file(dirPath));
+          if (stat.type === 1) { // 1 = FileDirectory
+            // 检查目录是否为空
+            const files = await workspace.fs.readDirectory(Uri.file(dirPath));
+            if (files.length === 0) {
+              await workspace.fs.delete(Uri.file(dirPath));
+            }
+          }
+        } catch {
+          // 目录不存在或无法访问，忽略
+        }
       }
     }
   }
