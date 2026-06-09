@@ -1,5 +1,5 @@
 import { pathCase } from 'change-case';
-import { basename, dirname, extname, join } from 'path';
+import { basename, dirname, extname, join, relative } from 'path';
 import { Uri, window, workspace } from 'vscode';
 import { containsChinese } from '../utils';
 import VarTranslator from './index';
@@ -15,13 +15,13 @@ export class FileNameTranslator {
   }
 
   /**
-   * 翻译文件名
+   * 翻译文件路径
    */
-  async translateFileName(chineseName: string): Promise<string | undefined> {
-    this.varTranslate.setText(chineseName);
+  async translateFilePath(chinesePath: string): Promise<string | undefined> {
+    this.varTranslate.setText(chinesePath);
     
     if (this.varTranslate.isEnglish) {
-      return chineseName;
+      return chinesePath;
     }
     
     const translated = await this.varTranslate.translate();
@@ -37,43 +37,50 @@ export class FileNameTranslator {
    * 处理文件创建事件
    */
   async handleFileCreation(file: Uri): Promise<void> {
-    const fileName = basename(file.fsPath);
+    const workspaceFolder = workspace.getWorkspaceFolder(file);
+    if (!workspaceFolder) {
+      return;
+    }
+    
+    // 获取相对路径（包含目录）
+    const relativePath = relative(workspaceFolder.uri.fsPath, file.fsPath);
     
     // 检测是否包含中文
-    if (!this.containsChinese(fileName)) {
+    if (!this.containsChinese(relativePath)) {
       return;
     }
     
     // 获取文件扩展名
-    const ext = extname(fileName);
-    const nameWithoutExt = basename(fileName, ext);
+    const ext = extname(relativePath);
+    const nameWithoutExt = relativePath.slice(0, -ext.length);
     
-    // 翻译文件名
-    const translatedName = await this.translateFileName(nameWithoutExt);
+    // 翻译文件路径
+    const translatedPath = await this.translateFilePath(nameWithoutExt);
     
-    if (!translatedName) {
+    if (!translatedPath) {
       window.showErrorMessage('文件名翻译失败，保持原文件名');
       return;
     }
     
-    // 构建新文件名
-    const newFileName = translatedName + ext;
-    const newFilePath = join(dirname(file.fsPath), newFileName);
+    // 构建新文件路径
+    const newRelativePath = translatedPath + ext;
+    const newFilePath = join(workspaceFolder.uri.fsPath, newRelativePath);
     
     // 检查目标文件是否已存在
     try {
       await workspace.fs.stat(Uri.file(newFilePath));
       // 文件已存在，添加数字后缀
-      const dir = dirname(file.fsPath);
+      const dir = dirname(newFilePath);
+      const baseName = basename(newFilePath, ext);
       let counter = 1;
-      let finalFileName = `${translatedName}_${counter}${ext}`;
+      let finalFileName = `${baseName}_${counter}${ext}`;
       let finalFilePath = join(dir, finalFileName);
       
       while (true) {
         try {
           await workspace.fs.stat(Uri.file(finalFilePath));
           counter++;
-          finalFileName = `${translatedName}_${counter}${ext}`;
+          finalFileName = `${baseName}_${counter}${ext}`;
           finalFilePath = join(dir, finalFileName);
         } catch {
           break;
@@ -82,7 +89,7 @@ export class FileNameTranslator {
       
       const options = [
         { label: finalFileName, description: '翻译后的文件名（避免冲突）' },
-        { label: fileName, description: '保持原文件名' }
+        { label: basename(relativePath), description: '保持原文件名' }
       ];
       
       const selected = await window.showQuickPick(options, {
@@ -90,14 +97,14 @@ export class FileNameTranslator {
         title: '文件名翻译'
       });
       
-      if (selected && selected.label !== fileName) {
+      if (selected && selected.label !== basename(relativePath)) {
         await workspace.fs.rename(file, Uri.file(finalFilePath));
       }
     } catch {
       // 目标文件不存在，直接重命名
       const options = [
-        { label: newFileName, description: '翻译后的文件名' },
-        { label: fileName, description: '保持原文件名' }
+        { label: basename(newRelativePath), description: '翻译后的文件名' },
+        { label: basename(relativePath), description: '保持原文件名' }
       ];
       
       const selected = await window.showQuickPick(options, {
@@ -105,7 +112,7 @@ export class FileNameTranslator {
         title: '文件名翻译'
       });
       
-      if (selected && selected.label !== fileName) {
+      if (selected && selected.label !== basename(relativePath)) {
         await workspace.fs.rename(file, Uri.file(newFilePath));
       }
     }
