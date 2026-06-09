@@ -8,6 +8,7 @@ import { TranslateLogger } from './translate/logger';
 import { initCache, getHistory, clearCache } from './translate/cache';
 import { t } from './i18n';
 import { EengineType } from './translate/engines';
+import { fileNameTranslator } from './translate/fileNameTranslator';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const vscodeModule = require('vscode');
@@ -139,6 +140,20 @@ export function activate(context: ExtensionContext) {
   migrateOldConfig(context);
   checkUpdate(context);
   createEngineStatusBar(context);
+
+  // 监听文件创建事件，自动翻译中文文件名
+  workspace.onDidCreateFiles(async (event) => {
+    const config = workspace.getConfiguration('varTranslation');
+    const autoTranslate = config.get<boolean>('autoTranslateFileName');
+    
+    if (autoTranslate === false) {
+      return;
+    }
+    
+    for (const file of event.files) {
+      await fileNameTranslator.handleFileCreation(file);
+    }
+  });
 
   context.subscriptions.push(commands.registerCommand('extension.varTranslation', main));
   context.subscriptions.push(commands.registerCommand('extension.varTranslation.selectCopilotModel', selectCopilotModel));
