@@ -94,15 +94,18 @@ export class FileNameTranslator {
       // 翻译文件路径（逐部分翻译）
       const parts = nameWithoutExt.split(/[\/\\]/);
       const translatedParts: string[] = [];
+      let translationFailed = false;
       
       for (const part of parts) {
         if (!part) continue;
         const translatedPart = await this.translateFileName(part);
         if (!translatedPart) {
-          window.showErrorMessage('文件名翻译失败，保持原文件名');
-          return;
+          // 翻译失败，使用原始部分
+          translatedParts.push(part);
+          translationFailed = true;
+        } else {
+          translatedParts.push(translatedPart);
         }
-        translatedParts.push(translatedPart);
       }
       
       const translatedName = translatedParts.join('/');
@@ -116,6 +119,11 @@ export class FileNameTranslator {
         description: '保持原文件名',
         path: relativePath
       });
+      
+      // 如果翻译失败，显示提示
+      if (translationFailed) {
+        window.showWarningMessage('部分翻译失败，使用原始名称作为备选');
+      }
       
       // 显示选择框
       const selected = await window.showQuickPick(formats, {
