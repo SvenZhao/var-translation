@@ -1,11 +1,15 @@
 import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
 import { basename, dirname, extname, join, relative, sep } from 'path';
-import { Uri, window, workspace } from 'vscode';
-import { changeCaseMap, containsChinese } from '../utils';
+import { QuickPickItem, Uri, window, workspace } from 'vscode';
+import { containsChinese } from '../utils';
 import VarTranslator from './index';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require('fs');
+
+interface FileNameQuickPickItem extends QuickPickItem {
+  fileName: string;
+}
 
 export class FileNameTranslator {
   private varTranslate = new VarTranslator();
@@ -18,7 +22,7 @@ export class FileNameTranslator {
   }
 
   /**
-   * 翻译单个部分（返回原始翻译结果，不做格式转换）
+   * 翻译单个部分
    */
   async translatePart(chinesePart: string): Promise<string | undefined> {
     this.varTranslate.setText(chinesePart);
@@ -32,7 +36,7 @@ export class FileNameTranslator {
       return undefined;
     }
     
-    // 直接返回翻译结果，不做格式转换
+    // 返回原始翻译结果，不做格式化
     return translated;
   }
 
@@ -40,8 +44,8 @@ export class FileNameTranslator {
    * 翻译文件路径（逐部分翻译）
    */
   async translateFilePath(chinesePath: string): Promise<string | undefined> {
-    // 按路径分隔符分割（同时处理正斜杠和反斜杠）
-    const parts = chinesePath.split(/[\\/]/);
+    // 按路径分隔符分割
+    const parts = chinesePath.split(sep);
     const translatedParts: string[] = [];
     
     for (const part of parts) {
@@ -54,28 +58,37 @@ export class FileNameTranslator {
       translatedParts.push(translatedPart);
     }
     
-    return translatedParts.join('/');
+    return translatedParts.join(' ');
   }
 
   /**
-   * 生成多种命名格式的选项
+   * 生成各种命名格式的选项
    */
-  generateNameOptions(translatedName: string, originalName: string): { label: string; description: string }[] {
-    const options: { label: string; description: string }[] = [];
+  generateFileNameOptions(translatedText: string, ext: string): FileNameQuickPickItem[] {
+    const options: FileNameQuickPickItem[] = [];
     
-    // 添加各种命名格式
-    for (const item of changeCaseMap) {
+    // 对翻译结果进行命名格式转换
+    const formats = [
+      { name: camelCase, description: 'camelCase 驼峰(小)' },
+      { name: pascalCase, description: 'PascalCase 驼峰(大)' },
+      { name: snakeCase, description: 'snake_case 下划线' },
+      { name: paramCase, description: 'param-case 中划线(小)' },
+      { name: headerCase, description: 'Header-Case 中划线(大)' },
+      { name: constantCase, description: 'CONSTANT_CASE 常量' },
+      { name: capitalCase, description: 'Capital Case 分词(大)' },
+      { name: dotCase, description: 'dot.case 对象属性' },
+      { name: noCase, description: 'no case 分词(小)' },
+      { name: pathCase, description: 'path/case 文件路径' },
+    ];
+    
+    for (const format of formats) {
+      const formattedName = format.name(translatedText);
       options.push({
-        label: item.handle(translatedName),
-        description: item.description
+        label: formattedName + ext,
+        description: format.description,
+        fileName: formattedName + ext
       });
     }
-    
-    // 添加保持原文件名选项
-    options.push({
-      label: originalName,
-      description: '保持原文件名'
-    });
     
     return options;
   }
@@ -84,16 +97,6 @@ export class FileNameTranslator {
    * 处理文件创建事件
    */
   async handleFileCreation(file: Uri): Promise<void> {
-    // 只处理文件，不处理目录
-    try {
-      const stat = await workspace.fs.stat(file);
-      if (stat.type !== 1) { // 1 = FileType.File
-        return;
-      }
-    } catch {
-      return;
-    }
-    
     const workspaceFolder = workspace.getWorkspaceFolder(file);
     if (!workspaceFolder) {
       return;
@@ -119,55 +122,35 @@ export class FileNameTranslator {
       return;
     }
     
-    // 生成多种命名格式选项
-    const options = this.generateNameOptions(translatedPath, basename(relativePath));
+    // 生成各种命名格式的选项
+    const options = this.generateFileNameOptions(translatedPath, ext);
+    
+    // 添加保持原文件名选项
+    options.push({
+      label: basename(relativePath),
+      description: '保持原文件名',
+      fileName: basename(relativePath)
+    });
     
     // 显示选择框
     const selected = await window.showQuickPick(options, {
-      placeHolder: '选择文件命名格式',
+      placeHolder: '选择文件名格式',
       title: '文件名翻译'
     });
     
-    if (!selected) {
-      return;
-    }
-    
-    // 如果选择了保持原文件名，则不重命名
-    if (selected.label === basename(relativePath)) {
-      return;
-    }
-    
-    // 获取用户选择的文件名
-    const newFileName = selected.label;
-    
-    // 构建新文件路径（保持目录结构，只替换文件名）
-    const dir = dirname(file.fsPath);
-    const newFilePath = join(dir, newFileName);
-    
-    // 检查目标文件是否已存在
-    try {
-      await workspace.fs.stat(Uri.file(newFilePath));
-      // 文件已存在，添加数字后缀
-      const baseName = basename(newFileName, ext);
-      let counter = 1;
-      let finalFileName = `${baseName}_${counter}${ext}`;
-      let finalFilePath = join(dir, finalFileName);
+    if (selected && selected.fileName !== basename(relativePath)) {
+      // 构建新文件路径（保持目录结构）
+      const dir = dirname(file.fsPath);
+      const newFilePath = join(dir, selected.fileName);
       
-      while (true) {
-        try {
-          await workspace.fs.stat(Uri.file(finalFilePath));
-          counter++;
-          finalFileName = `${baseName}_${counter}${ext}`;
-          finalFilePath = join(dir, finalFileName);
-        } catch {
-          break;
-        }
-      }
+      // 确保目标目录存在
+      await workspace.fs.createDirectory(Uri.file(dirname(newFilePath)));
       
-      await workspace.fs.rename(file, Uri.file(finalFilePath));
-    } catch {
-      // 目标文件不存在，直接重命名
+      // 重命名文件
       await workspace.fs.rename(file, Uri.file(newFilePath));
+      
+      // 尝试删除空的中文目录
+      await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
     }
   }
 
@@ -176,7 +159,7 @@ export class FileNameTranslator {
    */
   private async removeEmptyChineseDirs(file: Uri, workspaceRoot: string): Promise<void> {
     const relativePath = relative(workspaceRoot, file.fsPath);
-    const parts = relativePath.split(/[\\/]/);
+    const parts = relativePath.split(sep);
     
     // 从最深的目录开始，逐级向上检查
     for (let i = parts.length - 1; i > 0; i--) {
