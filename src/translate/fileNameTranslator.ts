@@ -122,6 +122,9 @@ export class FileNameTranslator {
         path: relativePath
       });
       
+      // 延迟显示选择框，等待文件创建完成
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       // 显示选择框
       const selected = await window.showQuickPick(formats, {
         placeHolder: '检测到中文文件名，选择命名格式：',
