@@ -100,25 +100,6 @@ export class FileNameTranslator {
     this.processingFiles.add(file.fsPath);
     
     try {
-      // 延迟显示对话框，等待文件创建完成
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // 第一步：显示系统模态对话框，询问用户是否翻译
-      const confirmMessage = `检测到中文文件名 "${basename(relativePath)}"，是否翻译为英文？`;
-      const confirmResult = await window.showInformationMessage(
-        confirmMessage,
-        { modal: true },
-        '翻译',
-        '取消'
-      );
-      
-      // 用户点击"取消"或关闭对话框
-      if (confirmResult !== '翻译') {
-        // 删除创建的中文文件和空目录
-        await this.deleteFileAndEmptyDirs(file, workspaceFolder.uri.fsPath);
-        return;
-      }
-      
       // 获取文件扩展名
       const ext = extname(relativePath);
       const nameWithoutExt = relativePath.slice(0, -ext.length);
@@ -150,9 +131,12 @@ export class FileNameTranslator {
         path: relativePath
       });
       
-      // 第二步：显示 QuickPick 选择命名格式
+      // 延迟显示选择框，等待文件创建完成
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // 显示 QuickPick 选择命名格式
       const selected = await window.showQuickPick(formats, {
-        placeHolder: '选择命名格式：',
+        placeHolder: '检测到中文文件名，选择命名格式：',
         title: '文件名翻译',
         ignoreFocusOut: true
       });
