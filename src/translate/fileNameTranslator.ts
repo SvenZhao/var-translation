@@ -1,4 +1,4 @@
-import { camelCase, pascalCase, snakeCase, paramCase, pathCase } from 'change-case';
+import { camelCase, pascalCase, snakeCase, paramCase } from 'change-case';
 import { basename, dirname, extname, join, relative, sep } from 'path';
 import { Uri, window, workspace, QuickPickItem } from 'vscode';
 import { containsChinese } from '../utils';
@@ -79,7 +79,6 @@ export class FileNameTranslator {
       { name: 'PascalCase', handler: pascalCase },
       { name: 'snake_case', handler: snakeCase },
       { name: 'param-case', handler: paramCase },
-      { name: 'path/case', handler: pathCase },
     ];
     
     for (const format of formats) {
