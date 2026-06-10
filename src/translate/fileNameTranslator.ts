@@ -1,15 +1,11 @@
-import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
+import { camelCase, paramCase, pascalCase, snakeCase, pathCase } from 'change-case';
 import { basename, dirname, extname, join, relative, sep } from 'path';
-import { QuickPickItem, Uri, window, workspace } from 'vscode';
+import { Uri, window, workspace } from 'vscode';
 import { containsChinese } from '../utils';
 import VarTranslator from './index';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require('fs');
-
-interface FileNameQuickPickItem extends QuickPickItem {
-  fileName: string;
-}
 
 export class FileNameTranslator {
   private varTranslate = new VarTranslator();
@@ -22,13 +18,13 @@ export class FileNameTranslator {
   }
 
   /**
-   * 翻译单个部分
+   * 翻译文件名（不含扩展名）
    */
-  async translatePart(chinesePart: string): Promise<string | undefined> {
-    this.varTranslate.setText(chinesePart);
+  async translateFileName(chineseName: string): Promise<string | undefined> {
+    this.varTranslate.setText(chineseName);
     
     if (this.varTranslate.isEnglish) {
-      return chinesePart;
+      return chineseName;
     }
     
     const translated = await this.varTranslate.translate();
@@ -36,61 +32,32 @@ export class FileNameTranslator {
       return undefined;
     }
     
-    // 返回原始翻译结果，不做格式化
     return translated;
   }
 
   /**
-   * 翻译文件路径（逐部分翻译）
+   * 生成多种命名格式
    */
-  async translateFilePath(chinesePath: string): Promise<string | undefined> {
-    // 按路径分隔符分割
-    const parts = chinesePath.split(sep);
-    const translatedParts: string[] = [];
+  private generateNameFormats(translatedName: string, ext: string): Array<{label: string, description: string, path: string}> {
+    // 处理路径分隔符
+    const parts = translatedName.split(/[\/\\]/);
+    const formats: Array<{label: string, description: string, path: string}> = [];
     
-    for (const part of parts) {
-      if (!part) continue; // 跳过空部分
-      
-      const translatedPart = await this.translatePart(part);
-      if (!translatedPart) {
-        return undefined;
-      }
-      translatedParts.push(translatedPart);
-    }
+    // 对每个部分应用不同的命名格式
+    const applyFormat = (formatter: (str: string) => string, description: string) => {
+      const formattedParts = parts.map(part => formatter(part));
+      const path = formattedParts.join('/') + ext;
+      formats.push({ label: path, description, path });
+    };
     
-    return translatedParts.join(' ');
-  }
-
-  /**
-   * 生成各种命名格式的选项
-   */
-  generateFileNameOptions(translatedText: string, ext: string): FileNameQuickPickItem[] {
-    const options: FileNameQuickPickItem[] = [];
+    // 添加各种命名格式
+    applyFormat(camelCase, 'camelCase 驼峰(小)');
+    applyFormat(pascalCase, 'pascalCase 驼峰(大)');
+    applyFormat(snakeCase, 'snakeCase 下划线');
+    applyFormat(paramCase, 'paramCase 中划线(小)');
+    applyFormat(pathCase, 'pathCase 文件路径');
     
-    // 对翻译结果进行命名格式转换
-    const formats = [
-      { name: camelCase, description: 'camelCase 驼峰(小)' },
-      { name: pascalCase, description: 'PascalCase 驼峰(大)' },
-      { name: snakeCase, description: 'snake_case 下划线' },
-      { name: paramCase, description: 'param-case 中划线(小)' },
-      { name: headerCase, description: 'Header-Case 中划线(大)' },
-      { name: constantCase, description: 'CONSTANT_CASE 常量' },
-      { name: capitalCase, description: 'Capital Case 分词(大)' },
-      { name: dotCase, description: 'dot.case 对象属性' },
-      { name: noCase, description: 'no case 分词(小)' },
-      { name: pathCase, description: 'path/case 文件路径' },
-    ];
-    
-    for (const format of formats) {
-      const formattedName = format.name(translatedText);
-      options.push({
-        label: formattedName + ext,
-        description: format.description,
-        fileName: formattedName + ext
-      });
-    }
-    
-    return options;
+    return formats;
   }
 
   /**
@@ -110,49 +77,88 @@ export class FileNameTranslator {
       return;
     }
     
-    // 延迟处理，等待文件系统操作完成
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
     // 获取文件扩展名
     const ext = extname(relativePath);
     const nameWithoutExt = relativePath.slice(0, -ext.length);
     
-    // 翻译文件路径
-    const translatedPath = await this.translateFilePath(nameWithoutExt);
+    // 翻译文件路径（逐部分翻译）
+    const parts = nameWithoutExt.split(/[\/\\]/);
+    const translatedParts: string[] = [];
     
-    if (!translatedPath) {
-      window.showErrorMessage('文件名翻译失败，保持原文件名');
-      return;
+    for (const part of parts) {
+      if (!part) continue;
+      const translatedPart = await this.translateFileName(part);
+      if (!translatedPart) {
+        window.showErrorMessage('文件名翻译失败，保持原文件名');
+        return;
+      }
+      translatedParts.push(translatedPart);
     }
     
-    // 生成各种命名格式的选项
-    const options = this.generateFileNameOptions(translatedPath, ext);
+    const translatedName = translatedParts.join('/');
+    
+    // 生成多种命名格式
+    const formats = this.generateNameFormats(translatedName, ext);
     
     // 添加保持原文件名选项
-    options.push({
-      label: basename(relativePath),
+    formats.push({ 
+      label: basename(relativePath), 
       description: '保持原文件名',
-      fileName: basename(relativePath)
+      path: relativePath
     });
     
     // 显示选择框
-    const selected = await window.showQuickPick(options, {
-      placeHolder: '选择文件名格式',
-      title: '文件名翻译',
-      ignoreFocusOut: true
+    const selected = await window.showQuickPick(formats, {
+      placeHolder: '检测到中文文件名，选择命名格式：',
+      title: '文件名翻译'
     });
     
-    if (selected && selected.fileName !== basename(relativePath)) {
-      // 构建新文件路径（保持目录结构）
-      const dir = dirname(file.fsPath);
-      const newFilePath = join(dir, selected.fileName);
+    if (!selected) {
+      return;
+    }
+    
+    // 如果选择保持原文件名，不进行任何操作
+    if (selected.description === '保持原文件名') {
+      return;
+    }
+    
+    // 构建新文件路径
+    const newRelativePath = selected.path;
+    const newFilePath = join(workspaceFolder.uri.fsPath, newRelativePath);
+    
+    // 检查目标文件是否已存在
+    try {
+      await workspace.fs.stat(Uri.file(newFilePath));
+      // 文件已存在，添加数字后缀
+      const dir = dirname(newFilePath);
+      const baseName = basename(newFilePath, ext);
+      let counter = 1;
+      let finalFileName = `${baseName}_${counter}${ext}`;
+      let finalFilePath = join(dir, finalFileName);
+      
+      while (true) {
+        try {
+          await workspace.fs.stat(Uri.file(finalFilePath));
+          counter++;
+          finalFileName = `${baseName}_${counter}${ext}`;
+          finalFilePath = join(dir, finalFileName);
+        } catch {
+          break;
+        }
+      }
       
       // 确保目标目录存在
+      await workspace.fs.createDirectory(Uri.file(dirname(finalFilePath)));
+      // 移动文件
+      await workspace.fs.rename(file, Uri.file(finalFilePath));
+      // 尝试删除空的中文目录
+      await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
+    } catch {
+      // 目标文件不存在，直接移动
+      // 确保目标目录存在
       await workspace.fs.createDirectory(Uri.file(dirname(newFilePath)));
-      
-      // 重命名文件
+      // 移动文件
       await workspace.fs.rename(file, Uri.file(newFilePath));
-      
       // 尝试删除空的中文目录
       await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
     }
