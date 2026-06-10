@@ -9,6 +9,7 @@ const fs = require('fs');
 
 export class FileNameTranslator {
   private varTranslate = new VarTranslator();
+  private processingFiles = new Set<string>();
 
   /**
    * 检查文件名是否包含中文
@@ -77,90 +78,113 @@ export class FileNameTranslator {
       return;
     }
     
-    // 获取文件扩展名
-    const ext = extname(relativePath);
-    const nameWithoutExt = relativePath.slice(0, -ext.length);
+    // 检查是否正在处理此文件（防止重复触发）
+    if (this.processingFiles.has(file.fsPath)) {
+      return;
+    }
     
-    // 翻译文件路径（逐部分翻译）
-    const parts = nameWithoutExt.split(/[\/\\]/);
-    const translatedParts: string[] = [];
-    
-    for (const part of parts) {
-      if (!part) continue;
-      const translatedPart = await this.translateFileName(part);
-      if (!translatedPart) {
-        window.showErrorMessage('文件名翻译失败，保持原文件名');
+    // 检查是否是目录（只处理文件）
+    try {
+      const stat = await workspace.fs.stat(file);
+      if (stat.type === 1) { // 1 = Directory
         return;
       }
-      translatedParts.push(translatedPart);
-    }
-    
-    const translatedName = translatedParts.join('/');
-    
-    // 生成多种命名格式
-    const formats = this.generateNameFormats(translatedName, ext);
-    
-    // 添加保持原文件名选项
-    formats.push({ 
-      label: basename(relativePath), 
-      description: '保持原文件名',
-      path: relativePath
-    });
-    
-    // 显示选择框
-    const selected = await window.showQuickPick(formats, {
-      placeHolder: '检测到中文文件名，选择命名格式：',
-      title: '文件名翻译'
-    });
-    
-    if (!selected) {
+    } catch {
       return;
     }
     
-    // 如果选择保持原文件名，不进行任何操作
-    if (selected.description === '保持原文件名') {
-      return;
-    }
+    // 标记正在处理此文件
+    this.processingFiles.add(file.fsPath);
     
-    // 构建新文件路径
-    const newRelativePath = selected.path;
-    const newFilePath = join(workspaceFolder.uri.fsPath, newRelativePath);
-    
-    // 检查目标文件是否已存在
     try {
-      await workspace.fs.stat(Uri.file(newFilePath));
-      // 文件已存在，添加数字后缀
-      const dir = dirname(newFilePath);
-      const baseName = basename(newFilePath, ext);
-      let counter = 1;
-      let finalFileName = `${baseName}_${counter}${ext}`;
-      let finalFilePath = join(dir, finalFileName);
+      // 获取文件扩展名
+      const ext = extname(relativePath);
+      const nameWithoutExt = relativePath.slice(0, -ext.length);
       
-      while (true) {
-        try {
-          await workspace.fs.stat(Uri.file(finalFilePath));
-          counter++;
-          finalFileName = `${baseName}_${counter}${ext}`;
-          finalFilePath = join(dir, finalFileName);
-        } catch {
-          break;
+      // 翻译文件路径（逐部分翻译）
+      const parts = nameWithoutExt.split(/[\/\\]/);
+      const translatedParts: string[] = [];
+      
+      for (const part of parts) {
+        if (!part) continue;
+        const translatedPart = await this.translateFileName(part);
+        if (!translatedPart) {
+          window.showErrorMessage('文件名翻译失败，保持原文件名');
+          return;
         }
+        translatedParts.push(translatedPart);
       }
       
-      // 确保目标目录存在
-      await workspace.fs.createDirectory(Uri.file(dirname(finalFilePath)));
-      // 移动文件
-      await workspace.fs.rename(file, Uri.file(finalFilePath));
-      // 尝试删除空的中文目录
-      await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
-    } catch {
-      // 目标文件不存在，直接移动
-      // 确保目标目录存在
-      await workspace.fs.createDirectory(Uri.file(dirname(newFilePath)));
-      // 移动文件
-      await workspace.fs.rename(file, Uri.file(newFilePath));
-      // 尝试删除空的中文目录
-      await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
+      const translatedName = translatedParts.join('/');
+      
+      // 生成多种命名格式
+      const formats = this.generateNameFormats(translatedName, ext);
+      
+      // 添加保持原文件名选项
+      formats.push({ 
+        label: basename(relativePath), 
+        description: '保持原文件名',
+        path: relativePath
+      });
+      
+      // 显示选择框
+      const selected = await window.showQuickPick(formats, {
+        placeHolder: '检测到中文文件名，选择命名格式：',
+        title: '文件名翻译'
+      });
+      
+      if (!selected) {
+        return;
+      }
+      
+      // 如果选择保持原文件名，不进行任何操作
+      if (selected.description === '保持原文件名') {
+        return;
+      }
+      
+      // 构建新文件路径
+      const newRelativePath = selected.path;
+      const newFilePath = join(workspaceFolder.uri.fsPath, newRelativePath);
+      
+      // 检查目标文件是否已存在
+      try {
+        await workspace.fs.stat(Uri.file(newFilePath));
+        // 文件已存在，添加数字后缀
+        const dir = dirname(newFilePath);
+        const baseName = basename(newFilePath, ext);
+        let counter = 1;
+        let finalFileName = `${baseName}_${counter}${ext}`;
+        let finalFilePath = join(dir, finalFileName);
+        
+        while (true) {
+          try {
+            await workspace.fs.stat(Uri.file(finalFilePath));
+            counter++;
+            finalFileName = `${baseName}_${counter}${ext}`;
+            finalFilePath = join(dir, finalFileName);
+          } catch {
+            break;
+          }
+        }
+        
+        // 确保目标目录存在
+        await workspace.fs.createDirectory(Uri.file(dirname(finalFilePath)));
+        // 移动文件
+        await workspace.fs.rename(file, Uri.file(finalFilePath));
+        // 尝试删除空的中文目录
+        await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
+      } catch {
+        // 目标文件不存在，直接移动
+        // 确保目标目录存在
+        await workspace.fs.createDirectory(Uri.file(dirname(newFilePath)));
+        // 移动文件
+        await workspace.fs.rename(file, Uri.file(newFilePath));
+        // 尝试删除空的中文目录
+        await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
+      }
+    } finally {
+      // 移除处理标志
+      this.processingFiles.delete(file.fsPath);
     }
   }
 
