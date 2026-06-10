@@ -1,4 +1,4 @@
-import { camelCase, paramCase, pascalCase, snakeCase, pathCase } from 'change-case';
+import { camelCase, pascalCase, snakeCase, paramCase, constantCase, headerCase } from 'change-case';
 import { basename, dirname, extname, join, relative, sep } from 'path';
 import { Uri, window, workspace } from 'vscode';
 import { containsChinese } from '../utils';
@@ -55,12 +55,13 @@ export class FileNameTranslator {
       formats.push({ label: path, description, path });
     };
     
-    // 添加各种命名格式
-    applyFormat(camelCase, 'camelCase 驼峰(小)');
-    applyFormat(pascalCase, 'pascalCase 驼峰(大)');
-    applyFormat(snakeCase, 'snakeCase 下划线');
-    applyFormat(paramCase, 'paramCase 中划线(小)');
-    applyFormat(pathCase, 'pathCase 文件路径');
+    // 添加用户选择的命名格式
+    applyFormat(camelCase, 'camelCase 小驼峰');
+    applyFormat(pascalCase, 'PascalCase 大驼峰');
+    applyFormat(snakeCase, 'snake_case 下划线');
+    applyFormat(paramCase, 'kebab-case 短横线');
+    applyFormat(constantCase, 'CONSTANT_CASE 常量');
+    applyFormat(headerCase, 'Header-Case 短横大写');
     
     return formats;
   }
