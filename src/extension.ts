@@ -142,7 +142,7 @@ export function activate(context: ExtensionContext) {
   createEngineStatusBar(context);
 
   // 监听文件创建事件，自动翻译中文文件名
-  workspace.onDidCreateFiles(async (event) => {
+  workspace.onDidCreateFiles((event) => {
     const config = workspace.getConfiguration('varTranslation');
     const autoTranslate = config.get<boolean>('autoTranslateFileName');
     
@@ -150,8 +150,11 @@ export function activate(context: ExtensionContext) {
       return;
     }
     
-    for (const file of event.files) {
-      await fileNameTranslator.handleFileCreation(file);
+    // 只处理最后一个文件（避免多次触发QuickPick）
+    const files = event.files;
+    if (files.length > 0) {
+      const lastFile = files[files.length - 1];
+      void fileNameTranslator.handleFileCreation(lastFile);
     }
   });
 
