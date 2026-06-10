@@ -84,6 +84,16 @@ export class FileNameTranslator {
    * 处理文件创建事件
    */
   async handleFileCreation(file: Uri): Promise<void> {
+    // 只处理文件，不处理目录
+    try {
+      const stat = await workspace.fs.stat(file);
+      if (stat.type !== 1) { // 1 = FileType.File
+        return;
+      }
+    } catch {
+      return;
+    }
+    
     const workspaceFolder = workspace.getWorkspaceFolder(file);
     if (!workspaceFolder) {
       return;
