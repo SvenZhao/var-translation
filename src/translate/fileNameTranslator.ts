@@ -1,17 +1,11 @@
-import { camelCase, pascalCase, snakeCase, paramCase } from 'change-case';
+import { camelCase, paramCase, pascalCase, snakeCase, constantCase, capitalCase, dotCase, headerCase, noCase, pathCase } from 'change-case';
 import { basename, dirname, extname, join, relative, sep } from 'path';
-import { Uri, window, workspace, QuickPickItem } from 'vscode';
-import { containsChinese } from '../utils';
+import { Uri, window, workspace } from 'vscode';
+import { changeCaseMap, containsChinese } from '../utils';
 import VarTranslator from './index';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require('fs');
-
-interface FileNameOption extends QuickPickItem {
-  fileName: string;
-  dirPath: string;
-  fullPath: string;
-}
 
 export class FileNameTranslator {
   private varTranslate = new VarTranslator();
@@ -24,7 +18,7 @@ export class FileNameTranslator {
   }
 
   /**
-   * 翻译单个部分
+   * 翻译单个部分（返回原始翻译结果，不做格式转换）
    */
   async translatePart(chinesePart: string): Promise<string | undefined> {
     this.varTranslate.setText(chinesePart);
@@ -38,6 +32,7 @@ export class FileNameTranslator {
       return undefined;
     }
     
+    // 直接返回翻译结果，不做格式转换
     return translated;
   }
 
@@ -45,8 +40,8 @@ export class FileNameTranslator {
    * 翻译文件路径（逐部分翻译）
    */
   async translateFilePath(chinesePath: string): Promise<string | undefined> {
-    // 按路径分隔符分割
-    const parts = chinesePath.split(sep);
+    // 按路径分隔符分割（同时处理正斜杠和反斜杠）
+    const parts = chinesePath.split(/[\\/]/);
     const translatedParts: string[] = [];
     
     for (const part of parts) {
@@ -59,47 +54,28 @@ export class FileNameTranslator {
       translatedParts.push(translatedPart);
     }
     
-    return translatedParts.join(sep);
+    return translatedParts.join('/');
   }
 
   /**
    * 生成多种命名格式的选项
    */
-  private generateFileNameOptions(translatedPath: string, ext: string, workspaceRoot: string): FileNameOption[] {
-    const options: FileNameOption[] = [];
+  generateNameOptions(translatedName: string, originalName: string): { label: string; description: string }[] {
+    const options: { label: string; description: string }[] = [];
     
-    // 对每个部分应用不同的命名格式
-    const parts = translatedPath.split(sep);
-    const fileName = parts[parts.length - 1] || '';
-    const dirParts = parts.slice(0, -1);
-    
-    // 生成不同的命名格式
-    const formats = [
-      { name: 'camelCase', handler: camelCase },
-      { name: 'PascalCase', handler: pascalCase },
-      { name: 'snake_case', handler: snakeCase },
-      { name: 'param-case', handler: paramCase },
-    ];
-    
-    for (const format of formats) {
-      // 对文件名应用格式
-      const formattedFileName = format.handler(fileName);
-      
-      // 对目录名应用格式（保持目录结构）
-      const formattedDirParts = dirParts.map(part => format.handler(part));
-      
-      // 构建完整路径
-      const newRelativePath = [...formattedDirParts, formattedFileName + ext].join('/');
-      const fullPath = join(workspaceRoot, ...formattedDirParts, formattedFileName + ext);
-      
+    // 添加各种命名格式
+    for (const item of changeCaseMap) {
       options.push({
-        label: formattedFileName + ext,
-        description: `${format.name} 格式`,
-        fileName: formattedFileName + ext,
-        dirPath: join(workspaceRoot, ...formattedDirParts),
-        fullPath: fullPath,
+        label: item.handle(translatedName),
+        description: item.description
       });
     }
+    
+    // 添加保持原文件名选项
+    options.push({
+      label: originalName,
+      description: '保持原文件名'
+    });
     
     return options;
   }
@@ -134,32 +110,54 @@ export class FileNameTranslator {
     }
     
     // 生成多种命名格式选项
-    const options = this.generateFileNameOptions(translatedPath, ext, workspaceFolder.uri.fsPath);
-    
-    // 添加保持原文件名选项
-    options.push({
-      label: basename(relativePath),
-      description: '保持原文件名',
-      fileName: basename(relativePath),
-      dirPath: dirname(file.fsPath),
-      fullPath: file.fsPath,
-    });
+    const options = this.generateNameOptions(translatedPath, basename(relativePath));
     
     // 显示选择框
     const selected = await window.showQuickPick(options, {
-      placeHolder: '检测到中文文件名，选择命名格式：',
+      placeHolder: '选择文件命名格式',
       title: '文件名翻译'
     });
     
-    if (selected && selected.fullPath !== file.fsPath) {
-      // 确保目标目录存在
-      await workspace.fs.createDirectory(Uri.file(selected.dirPath));
+    if (!selected) {
+      return;
+    }
+    
+    // 如果选择了保持原文件名，则不重命名
+    if (selected.label === basename(relativePath)) {
+      return;
+    }
+    
+    // 获取用户选择的文件名
+    const newFileName = selected.label;
+    
+    // 构建新文件路径（保持目录结构，只替换文件名）
+    const dir = dirname(file.fsPath);
+    const newFilePath = join(dir, newFileName);
+    
+    // 检查目标文件是否已存在
+    try {
+      await workspace.fs.stat(Uri.file(newFilePath));
+      // 文件已存在，添加数字后缀
+      const baseName = basename(newFileName, ext);
+      let counter = 1;
+      let finalFileName = `${baseName}_${counter}${ext}`;
+      let finalFilePath = join(dir, finalFileName);
       
-      // 移动文件
-      await workspace.fs.rename(file, Uri.file(selected.fullPath));
+      while (true) {
+        try {
+          await workspace.fs.stat(Uri.file(finalFilePath));
+          counter++;
+          finalFileName = `${baseName}_${counter}${ext}`;
+          finalFilePath = join(dir, finalFileName);
+        } catch {
+          break;
+        }
+      }
       
-      // 尝试删除空的中文目录
-      await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
+      await workspace.fs.rename(file, Uri.file(finalFilePath));
+    } catch {
+      // 目标文件不存在，直接重命名
+      await workspace.fs.rename(file, Uri.file(newFilePath));
     }
   }
 
@@ -168,7 +166,7 @@ export class FileNameTranslator {
    */
   private async removeEmptyChineseDirs(file: Uri, workspaceRoot: string): Promise<void> {
     const relativePath = relative(workspaceRoot, file.fsPath);
-    const parts = relativePath.split(sep);
+    const parts = relativePath.split(/[\\/]/);
     
     // 从最深的目录开始，逐级向上检查
     for (let i = parts.length - 1; i > 0; i--) {
