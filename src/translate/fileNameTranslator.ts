@@ -125,7 +125,8 @@ export class FileNameTranslator {
       // 显示选择框
       const selected = await window.showQuickPick(formats, {
         placeHolder: '检测到中文文件名，选择命名格式：',
-        title: '文件名翻译'
+        title: '文件名翻译',
+        ignoreFocusOut: true
       });
       
       if (!selected) {
