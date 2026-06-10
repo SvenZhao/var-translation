@@ -110,6 +110,9 @@ export class FileNameTranslator {
       return;
     }
     
+    // 延迟处理，等待文件系统操作完成
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     // 获取文件扩展名
     const ext = extname(relativePath);
     const nameWithoutExt = relativePath.slice(0, -ext.length);
@@ -135,7 +138,8 @@ export class FileNameTranslator {
     // 显示选择框
     const selected = await window.showQuickPick(options, {
       placeHolder: '选择文件名格式',
-      title: '文件名翻译'
+      title: '文件名翻译',
+      ignoreFocusOut: true
     });
     
     if (selected && selected.fileName !== basename(relativePath)) {
