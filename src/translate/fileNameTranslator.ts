@@ -45,12 +45,20 @@ export class FileNameTranslator {
    */
   private generateNameFormats(translatedName: string, ext: string): Array<{label: string, description: string, path: string}> {
     // 处理路径分隔符
-    const parts = translatedName.split(/[\/\\]/);
+    const pathParts = translatedName.split(/[\/\\]/);
     const formats: Array<{label: string, description: string, path: string}> = [];
     
-    // 对每个部分应用不同的命名格式
+    // 对每个部分应用不同的命名格式，保留点号
     const applyFormat = (formatter: (str: string) => string, description: string) => {
-      const formattedParts = parts.map(part => formatter(part));
+      const formattedParts = pathParts.map(part => {
+        // 如果部分包含点号（如 hello.world），需要保留点号结构
+        if (part.includes('.')) {
+          const subParts = part.split('.');
+          const formattedSubParts = subParts.map(sub => formatter(sub));
+          return formattedSubParts.join('.');
+        }
+        return formatter(part);
+      });
       const path = formattedParts.join('/') + ext;
       formats.push({ label: path, description, path });
     };
