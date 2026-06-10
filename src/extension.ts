@@ -150,11 +150,21 @@ export function activate(context: ExtensionContext) {
       return;
     }
     
-    // 只处理最后一个文件（避免多次触发QuickPick）
+    // 找到包含中文的文件（优先处理文件而不是目录）
     const files = event.files;
-    if (files.length > 0) {
-      const lastFile = files[files.length - 1];
-      void fileNameTranslator.handleFileCreation(lastFile);
+    let targetFile: any = null;
+    
+    for (const file of files) {
+      const fileName = file.fsPath.split(/[/\\]/).pop() || '';
+      // 跳过目录，只处理文件（通过扩展名判断）
+      if (fileName.includes('.')) {
+        targetFile = file;
+        break;
+      }
+    }
+    
+    if (targetFile) {
+      void fileNameTranslator.handleFileCreation(targetFile);
     }
   });
 
