@@ -28,12 +28,16 @@ export class FileNameTranslator {
       return chineseName;
     }
     
-    const translated = await this.varTranslate.translate();
-    if (!translated) {
-      return undefined;
+    try {
+      const translated = await this.varTranslate.translate();
+      if (!translated) {
+        return chineseName; // 翻译失败时返回原始名称
+      }
+      return translated;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return chineseName; // 出错时返回原始名称
     }
-    
-    return translated;
   }
 
   /**
