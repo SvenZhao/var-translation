@@ -83,16 +83,6 @@ export class FileNameTranslator {
       return;
     }
     
-    // 检查是否是目录（只处理文件）
-    try {
-      const stat = await workspace.fs.stat(file);
-      if (stat.type === 1) { // 1 = Directory
-        return;
-      }
-    } catch {
-      return;
-    }
-    
     // 标记正在处理此文件
     this.processingFiles.add(file.fsPath);
     
@@ -146,42 +136,12 @@ export class FileNameTranslator {
       const newRelativePath = selected.path;
       const newFilePath = join(workspaceFolder.uri.fsPath, newRelativePath);
       
-      // 检查目标文件是否已存在
-      try {
-        await workspace.fs.stat(Uri.file(newFilePath));
-        // 文件已存在，添加数字后缀
-        const dir = dirname(newFilePath);
-        const baseName = basename(newFilePath, ext);
-        let counter = 1;
-        let finalFileName = `${baseName}_${counter}${ext}`;
-        let finalFilePath = join(dir, finalFileName);
-        
-        while (true) {
-          try {
-            await workspace.fs.stat(Uri.file(finalFilePath));
-            counter++;
-            finalFileName = `${baseName}_${counter}${ext}`;
-            finalFilePath = join(dir, finalFileName);
-          } catch {
-            break;
-          }
-        }
-        
-        // 确保目标目录存在
-        await workspace.fs.createDirectory(Uri.file(dirname(finalFilePath)));
-        // 移动文件
-        await workspace.fs.rename(file, Uri.file(finalFilePath));
-        // 尝试删除空的中文目录
-        await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
-      } catch {
-        // 目标文件不存在，直接移动
-        // 确保目标目录存在
-        await workspace.fs.createDirectory(Uri.file(dirname(newFilePath)));
-        // 移动文件
-        await workspace.fs.rename(file, Uri.file(newFilePath));
-        // 尝试删除空的中文目录
-        await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
-      }
+      // 确保目标目录存在
+      await workspace.fs.createDirectory(Uri.file(dirname(newFilePath)));
+      // 移动文件
+      await workspace.fs.rename(file, Uri.file(newFilePath));
+      // 尝试删除空的中文目录
+      await this.removeEmptyChineseDirs(file, workspaceFolder.uri.fsPath);
     } finally {
       // 移除处理标志
       this.processingFiles.delete(file.fsPath);
