@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/SvenZhao/var-translation/compare/v1.1.0...v1.2.0) (2026-06-29)
+
+### Features
+
+* **文件名翻译**：资源管理器右键驼峰翻译，支持文件/目录重命名 ([feat/explorer-context-menu](https://github.com/SvenZhao/var-translation/tree/feat/explorer-context-menu))
+* 右键菜单「驼峰命名转换」直接弹 QuickPick，子菜单保留各具体格式
+* 同一快捷键 `Cmd+Shift+T` 智能区分编辑器中文本翻译和资源管理器中文件名翻译
+* 支持 `Cmd+Z` 撤销重命名（WorkspaceEdit）
+* 支持 dotfile（`.eslintrc`、`.npmignore` 等）和目录重命名
+
 ## [1.1.0](https://github.com/SvenZhao/var-translation/compare/v0.13.60...v1.1.0) (2026-03-03)
 
 

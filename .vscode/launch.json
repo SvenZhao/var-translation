@@ -9,7 +9,7 @@
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js" // 确保输出目录正确
       ],
-      "preLaunchTask": "${defaultBuildTask}"
+      "preLaunchTask": "npm: compile"
     }
   ]
 }

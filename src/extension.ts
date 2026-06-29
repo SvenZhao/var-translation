@@ -136,6 +136,25 @@ async function showTranslateHistory() {
   }
 }
 
+/**
+ * 从当前上下文解析要处理的文件 URI
+ * 快捷键无参数时，依次尝试：活动编辑器 → 最近 Tab
+ */
+function resolveFileFromContext(): Uri | undefined {
+  // 1. 当前激活的编辑器
+  const editor = window.activeTextEditor;
+  if (editor?.document.uri) {
+    return editor.document.uri;
+  }
+  // 2. 从最近的活动 Tab 获取
+  const activeTab = window.tabGroups.activeTabGroup.activeTab;
+  const tabInput = activeTab?.input as { uri?: Uri } | undefined;
+  if (tabInput?.uri?.fsPath) {
+    return tabInput.uri;
+  }
+  return undefined;
+}
+
 export function activate(context: ExtensionContext) {
   packageJSON = context.extension.packageJSON;
   initCache(context);
@@ -143,37 +162,37 @@ export function activate(context: ExtensionContext) {
   checkUpdate(context);
   createEngineStatusBar(context);
 
-  // 文件模式：翻译文件名（右键 Explorer / 快捷键）
+  // 翻译文件名（右键 Explorer / 快捷键）
   context.subscriptions.push(commands.registerCommand('extension.varTranslation.translateFileName', (uri?: Uri) => {
     if (uri?.fsPath) {
       void fileNameTranslator.translateFile(uri);
       return;
     }
-
-    // 快捷键触发：尝试从多个来源获取当前文件
-    // 1. 当前激活的编辑器
-    const editor = window.activeTextEditor;
-    if (editor?.document.uri) {
-      void fileNameTranslator.translateFile(editor.document.uri);
-      return;
+    // 快捷键：从当前编辑器或 Tab 获取文件
+    const file = resolveFileFromContext();
+    if (file) {
+      void fileNameTranslator.translateFile(file);
+    } else {
+      window.showInformationMessage('请打开文件后按快捷键，或在资源管理器中右键 → 驼峰翻译');
     }
-
-    // 2. 从最近的活动 Tab 获取
-    const activeTab = window.tabGroups.activeTabGroup.activeTab;
-    const tabInput = activeTab?.input as { uri?: Uri } | undefined;
-    if (tabInput?.uri?.fsPath) {
-      void fileNameTranslator.translateFile(tabInput.uri);
-      return;
-    }
-
-    // 3. 还是找不到，引导用户使用右键
-    window.showInformationMessage('请在资源管理器中右键文件/目录 → 驼峰翻译');
   }));
 
-  // 编辑器模式：驼峰命名转换 — 也支持从资源管理器传入 URI
+  // 驼峰命名转换：编辑器模式 & 文件模式
   context.subscriptions.push(commands.registerCommand('extension.varTranslation', (uri?: Uri) => {
     if (uri?.fsPath) {
+      // 右键菜单触发 → 文件模式
       void fileNameTranslator.translateFile(uri);
+      return;
+    }
+    // 有选中文本 → 文本模式（原有行为）
+    if (window.activeTextEditor && !window.activeTextEditor.selection.isEmpty) {
+      main();
+      return;
+    }
+    // 无选中文本 → 尝试文件模式（可能是 Explorer 点击了文件）
+    const file = resolveFileFromContext();
+    if (file) {
+      void fileNameTranslator.translateFile(file);
     } else {
       main();
     }

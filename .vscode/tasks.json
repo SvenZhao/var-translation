@@ -3,8 +3,8 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "watch", // Webpack 构建任务，监听文件变动并进行打包
-      "problemMatcher": ["$ts-webpack-watch", "$tslint-webpack-watch"],
+      "script": "watch",
+      "problemMatcher": "$ts-webpack-watch",
       "isBackground": true,
       "presentation": {
         "reveal": "never"
@@ -12,6 +12,17 @@
       "group": {
         "kind": "build",
         "isDefault": true
+      }
+    },
+    {
+      "type": "npm",
+      "script": "compile",
+      "problemMatcher": "$ts-webpack-watch",
+      "group": {
+        "kind": "build"
+      },
+      "presentation": {
+        "reveal": "never"
       }
     }
   ]

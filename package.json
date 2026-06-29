@@ -4,7 +4,7 @@
   "description": "快速将中文变量翻译名转换为多种常用驼峰命名格式（如 camelCase、PascalCase、snake_case 等）。同时，支持 腾讯 百度 OpenAI API 自定义翻译模型提升开发效率。",
   "publisher": "svenzhao",
   "icon": "images/logo.png",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -31,12 +31,6 @@
         "command": "extension.varTranslation",
         "key": "Alt+shift+t",
         "mac": "cmd+shift+t"
-      },
-      {
-        "command": "extension.varTranslation.translateFileName",
-        "key": "Alt+shift+n",
-        "mac": "cmd+shift+n",
-        "when": "!inputFocus"
       }
     ],
     "commands": [
@@ -147,64 +141,64 @@
       ],
       "explorer/context": [
         {
+          "command": "extension.varTranslation",
+          "group": "1_var-translation",
+          "title": "驼峰命名转换"
+        },
+        {
           "submenu": "var-translation.menulist",
-          "group": "var-translation"
+          "group": "2_var-translation"
         }
       ],
       "var-translation.menulist": [
         {
-          "command": "extension.varTranslation",
-          "group": "1",
-          "title": "选择翻译"
-        },
-        {
           "command": "extension.varTranslation.camelCase",
-          "group": "2",
+          "group": "1",
           "title": "camelCase 驼峰(小) camelCase"
         },
         {
           "command": "extension.varTranslation.pascalCase",
-          "group": "3",
+          "group": "2",
           "title": "pascalCase 驼峰(大) PascalCase"
         },
         {
           "command": "extension.varTranslation.paramCase",
-          "group": "4",
+          "group": "3",
           "title": "paramCase 中划线(小) param-case"
         },
         {
           "command": "extension.varTranslation.snakeCase",
-          "group": "5",
+          "group": "4",
           "title": "snakeCase 下划线 snake_case"
         },
         {
           "command": "extension.varTranslation.constantCase",
-          "group": "6",
+          "group": "5",
           "title": "constantCase 常量 CONSTANT_CASE"
         },
         {
           "command": "extension.varTranslation.capitalCase",
-          "group": "7",
+          "group": "6",
           "title": "capitalCase 分词(大) Capital Case"
         },
         {
           "command": "extension.varTranslation.dotCase",
-          "group": "8",
+          "group": "7",
           "title": "dotCase 对象属性 dot case"
         },
         {
           "command": "extension.varTranslation.headerCase",
-          "group": "9",
+          "group": "8",
           "title": "headerCase 中划线(大) Header-Case"
         },
         {
           "command": "extension.varTranslation.noCase",
-          "group": "10",
+          "group": "9",
           "title": "noCase 分词(小) no case"
         },
         {
           "command": "extension.varTranslation.pathCase",
-          "group": "11",
+          "group": "10",
           "title": "pathCase 文件路径 path/case"
         }
       ]
