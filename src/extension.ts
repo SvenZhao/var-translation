@@ -1,4 +1,4 @@
-import { window, ExtensionContext, commands, QuickPickItem, Selection, workspace, StatusBarAlignment } from 'vscode';
+import { window, ExtensionContext, commands, QuickPickItem, Selection, workspace, StatusBarAlignment, Uri } from 'vscode';
 import { changeCaseMap } from './utils';
 import AsyncQuickPick from './utils/asyncPick';
 import VarTranslate from './translate';
@@ -8,6 +8,7 @@ import { TranslateLogger } from './translate/logger';
 import { initCache, getHistory, clearCache } from './translate/cache';
 import { t } from './i18n';
 import { EengineType } from './translate/engines';
+import { fileNameTranslator } from './translate/fileNameTranslator';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const vscodeModule = require('vscode');
@@ -140,7 +141,29 @@ export function activate(context: ExtensionContext) {
   checkUpdate(context);
   createEngineStatusBar(context);
 
-  context.subscriptions.push(commands.registerCommand('extension.varTranslation', main));
+  // 文件模式：翻译文件名（右键 Explorer / 快捷键）
+  context.subscriptions.push(commands.registerCommand('extension.varTranslation.translateFileName', (uri?: Uri) => {
+    if (uri?.fsPath) {
+      void fileNameTranslator.translateFile(uri);
+    } else {
+      // 快捷键触发，尝试从编辑器获取当前文件
+      const editor = window.activeTextEditor;
+      if (editor?.document.uri) {
+        void fileNameTranslator.translateFile(editor.document.uri);
+      } else {
+        window.showInformationMessage('请在资源管理器中选择一个文件');
+      }
+    }
+  }));
+
+  // 编辑器模式：驼峰命名转换 — 也支持从资源管理器传入 URI
+  context.subscriptions.push(commands.registerCommand('extension.varTranslation', (uri?: Uri) => {
+    if (uri?.fsPath) {
+      void fileNameTranslator.translateFile(uri);
+    } else {
+      main();
+    }
+  }));
   context.subscriptions.push(commands.registerCommand('extension.varTranslation.selectCopilotModel', selectCopilotModel));
   context.subscriptions.push(commands.registerCommand('extension.varTranslation.configEngine', configEngineGuide));
   context.subscriptions.push(commands.registerCommand('extension.varTranslation.switchEngine', switchEngine));
@@ -151,7 +174,13 @@ export function activate(context: ExtensionContext) {
   }));
 
   changeCaseMap.forEach((item) => {
-    context.subscriptions.push(commands.registerCommand(`extension.varTranslation.${item.name}`, () => typeTranslation(item.name)));
+    context.subscriptions.push(commands.registerCommand(`extension.varTranslation.${item.name}`, (uri?: Uri) => {
+      if (uri?.fsPath) {
+        void fileNameTranslator.translateFile(uri, item.name);
+      } else {
+        typeTranslation(item.name);
+      }
+    }));
   });
 }
 

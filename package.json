@@ -31,6 +31,12 @@
         "command": "extension.varTranslation",
         "key": "Alt+shift+t",
         "mac": "cmd+shift+t"
+      },
+      {
+        "command": "extension.varTranslation.translateFileName",
+        "key": "Alt+shift+n",
+        "mac": "cmd+shift+n",
+        "when": "explorerViewletFocus && !inputFocus"
       }
     ],
     "commands": [
@@ -137,6 +143,12 @@
         {
           "submenu": "var-translation.menulist",
           "when": "editorTextFocus"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "var-translation.menulist",
+          "group": "var-translation"
         }
       ],
       "var-translation.menulist": [
