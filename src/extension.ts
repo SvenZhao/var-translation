@@ -147,15 +147,27 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(commands.registerCommand('extension.varTranslation.translateFileName', (uri?: Uri) => {
     if (uri?.fsPath) {
       void fileNameTranslator.translateFile(uri);
-    } else {
-      // 快捷键触发，尝试从编辑器获取当前文件
-      const editor = window.activeTextEditor;
-      if (editor?.document.uri) {
-        void fileNameTranslator.translateFile(editor.document.uri);
-      } else {
-        window.showInformationMessage('请在资源管理器中选择一个文件');
-      }
+      return;
     }
+
+    // 快捷键触发：尝试从多个来源获取当前文件
+    // 1. 当前激活的编辑器
+    const editor = window.activeTextEditor;
+    if (editor?.document.uri) {
+      void fileNameTranslator.translateFile(editor.document.uri);
+      return;
+    }
+
+    // 2. 从最近的活动 Tab 获取
+    const activeTab = window.tabGroups.activeTabGroup.activeTab;
+    const tabInput = activeTab?.input as { uri?: Uri } | undefined;
+    if (tabInput?.uri?.fsPath) {
+      void fileNameTranslator.translateFile(tabInput.uri);
+      return;
+    }
+
+    // 3. 还是找不到，引导用户使用右键
+    window.showInformationMessage('请在资源管理器中右键文件/目录 → 驼峰翻译');
   }));
 
   // 编辑器模式：驼峰命名转换 — 也支持从资源管理器传入 URI

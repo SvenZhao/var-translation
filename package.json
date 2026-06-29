@@ -36,7 +36,7 @@
         "command": "extension.varTranslation.translateFileName",
         "key": "Alt+shift+n",
         "mac": "cmd+shift+n",
-        "when": "explorerViewletFocus && !inputFocus"
+        "when": "!inputFocus"
       }
     ],
     "commands": [
