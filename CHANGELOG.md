@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/SvenZhao/var-translation/compare/v1.1.0...v1.3.0) (2026-06-29)
+
+
+### Features
+
+* 资源管理器右键驼峰翻译（替代 PR [#96](https://github.com/SvenZhao/var-translation/issues/96) 自动创建监听） ([a183150](https://github.com/SvenZhao/var-translation/commit/a1831503e632f7ece6f975210547958954aef238))
+* 资源管理器右键驼峰翻译（文件/目录重命名） ([36fe9a7](https://github.com/SvenZhao/var-translation/commit/36fe9a7b40f7f1e3fb08e92c0a682aa11f4a8dd5))
+
+
+### Bug Fixes
+
+* 文件名翻译支持纯英文文件直接格式转换（不要求必须含中文） ([ce083ca](https://github.com/SvenZhao/var-translation/commit/ce083cab8e4d08a94cc2ccd1a5af11f5754b54a4))
+* 修复文件名翻译多个 bug ([a1697d5](https://github.com/SvenZhao/var-translation/commit/a1697d5824fac4c141ba62efb245f665f21c90ce))
+
 ## [1.2.0](https://github.com/SvenZhao/var-translation/compare/v1.1.0...v1.2.0) (2026-06-29)
 
 ### Features
