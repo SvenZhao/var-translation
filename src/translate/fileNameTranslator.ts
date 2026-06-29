@@ -91,32 +91,32 @@ export class FileNameTranslator {
     }
 
     const relativePath = relative(workspaceFolder.uri.fsPath, file.fsPath);
-
-    // 检查是否包含中文
-    if (!isChinese(relativePath)) {
-      window.showInformationMessage('文件名不包含中文，无需翻译');
-      return;
-    }
-
     const ext = extname(relativePath);
     const nameWithoutExt = relativePath.slice(0, -ext.length);
-
-    // 逐部分翻译路径
     const parts = nameWithoutExt.split(/[\/\\]/);
-    const translatedParts: string[] = [];
 
-    for (const part of parts) {
-      if (!part) continue;
-      const translated = await this.translateText(part);
-      translatedParts.push(translated);
+    // 检查是否包含中文，有中文则先翻译
+    const hasChinese = isChinese(relativePath);
+    let baseName: string;
+
+    if (hasChinese) {
+      // 逐部分翻译路径
+      const translatedParts: string[] = [];
+      for (const part of parts) {
+        if (!part) continue;
+        const translated = await this.translateText(part);
+        translatedParts.push(translated);
+      }
+      baseName = translatedParts.join('/');
+    } else {
+      // 纯英文文件：不做翻译，直接应用格式转换
+      baseName = parts.join('/');
     }
-
-    const translatedName = translatedParts.join('/');
 
     // 如果指定了格式，直接应用
     if (format && this.formatMap[format]) {
       const formatter = this.formatMap[format];
-      const newParts = translatedName.split(/[\/\\]/).map((part) => {
+      const newParts = baseName.split(/[\/\\]/).map((part) => {
         if (part.includes('.')) {
           return part.split('.').map((s) => formatter(s)).join('.');
         }
@@ -132,7 +132,7 @@ export class FileNameTranslator {
     }
 
     // 未指定格式，弹出 QuickPick
-    const formats = this.generateFormats(translatedName, ext, basename(relativePath));
+    const formats = this.generateFormats(baseName, ext, basename(relativePath));
 
     const selected = await window.showQuickPick(formats, {
       placeHolder: '选择命名格式：',

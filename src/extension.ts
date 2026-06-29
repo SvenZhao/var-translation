@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import { window, ExtensionContext, commands, QuickPickItem, Selection, workspace, StatusBarAlignment, Uri } from 'vscode';
 import { changeCaseMap } from './utils';
 import AsyncQuickPick from './utils/asyncPick';
@@ -9,9 +10,6 @@ import { initCache, getHistory, clearCache } from './translate/cache';
 import { t } from './i18n';
 import { EengineType } from './translate/engines';
 import { fileNameTranslator } from './translate/fileNameTranslator';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const vscodeModule = require('vscode');
 
 
 export let packageJSON: any;
@@ -44,7 +42,7 @@ const checkUpdate = async (context: ExtensionContext) => {
   );
 
   if (action === '查看更新日志' && changelogUrl) {
-    commands.executeCommand('vscode.open', vscodeModule.Uri.parse(changelogUrl));
+    commands.executeCommand('vscode.open', Uri.parse(changelogUrl));
   }
 };
 
@@ -85,8 +83,12 @@ function updateEngineStatusBar() {
   engineStatusBar.tooltip = '点击切换翻译引擎';
 }
 
+interface EngineQuickPickItem extends QuickPickItem {
+  value: string;
+}
+
 async function switchEngine() {
-  const items = Object.entries(ENGINE_LABELS).map(([value, label]) => ({
+  const items: EngineQuickPickItem[] = Object.entries(ENGINE_LABELS).map(([value, label]) => ({
     label,
     value,
     picked: value === (workspace.getConfiguration('varTranslation').get<string>('translationEngine') || EengineType.google),
@@ -273,12 +275,12 @@ const typeTranslation = async (type: string) => {
  */
 async function selectCopilotModel() {
   try {
-    if (typeof vscodeModule.lm === 'undefined') {
+    if (typeof (vscode as any).lm === 'undefined') {
       window.showErrorMessage(t('copilot.notSupported'));
       return;
     }
 
-    const models = await vscodeModule.lm.selectChatModels();
+    const models = await (vscode as any).lm.selectChatModels();
     if (!models || models.length === 0) {
       window.showErrorMessage(t('copilot.noModels'));
       return;
