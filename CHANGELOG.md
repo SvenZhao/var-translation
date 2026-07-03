@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/SvenZhao/var-translation/compare/v1.3.0...v1.3.1) (2026-07-03)
+
+
+### Bug Fixes
+
+* 编辑器有焦点但无选中文本时不再误走文件翻译路径 ([c137686](https://github.com/SvenZhao/var-translation/commit/c1376860f2e38ae3e8a0c740b85c11d12f03d841))
+
 ## [1.3.0](https://github.com/SvenZhao/var-translation/compare/v1.1.0...v1.3.0) (2026-06-29)
 
 
