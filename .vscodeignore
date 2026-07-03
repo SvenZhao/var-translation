@@ -1,5 +1,6 @@
 .vscode/**
 .vscode-test/**
+.codegraph/**
 out/**
 src/**
 .gitignore
