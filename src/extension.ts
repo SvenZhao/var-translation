@@ -180,21 +180,29 @@ export function activate(context: ExtensionContext) {
   // 驼峰命名转换：编辑器模式 & 文件模式
   context.subscriptions.push(commands.registerCommand('extension.varTranslation', (uri?: Uri) => {
     if (uri?.fsPath) {
-      // 右键菜单触发 → 文件模式
+      // 右键菜单触发（explorer/context）→ 文件模式
       void fileNameTranslator.translateFile(uri);
       return;
     }
-    // 有选中文本 → 文本模式（原有行为）
+
+    // 编辑器模式：有选中文本 → 文本翻译
     if (window.activeTextEditor && !window.activeTextEditor.selection.isEmpty) {
       main();
       return;
     }
-    // 无选中文本 → 尝试文件模式（可能是 Explorer 点击了文件）
+
+    // 编辑器模式：无选中文本 → 提示
+    if (window.activeTextEditor) {
+      window.showInformationMessage('请先在编辑器中选中要翻译的文本');
+      return;
+    }
+
+    // 无活跃编辑器时，尝试从 Tab 获取文件
     const file = resolveFileFromContext();
     if (file) {
       void fileNameTranslator.translateFile(file);
     } else {
-      main();
+      window.showInformationMessage('请打开文件后按快捷键，或在资源管理器中右键 → 驼峰翻译');
     }
   }));
   context.subscriptions.push(commands.registerCommand('extension.varTranslation.selectCopilotModel', selectCopilotModel));
