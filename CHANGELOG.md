@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/SvenZhao/var-translation/compare/v1.3.1...v1.3.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* 编辑器右键选中文本翻译误走文件重命名路径（issue [#97](https://github.com/SvenZhao/var-translation/issues/97)） ([453e1ea](https://github.com/SvenZhao/var-translation/commit/453e1eac76dbcfa85f4069b867a3e00d8d12592a))
+
 ### [1.3.1](https://github.com/SvenZhao/var-translation/compare/v1.3.0...v1.3.1) (2026-07-03)
 
 
