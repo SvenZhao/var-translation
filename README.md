@@ -96,7 +96,9 @@ services:
 
 部署后在插件设置中将 LibreTranslate API 地址指向 `http://localhost:5000/translate` 即可。
 
-## 🤝 致谢
+## 🤝 贡献
+
+欢迎贡献代码（尤其是新翻译引擎）！详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 感谢以下贡献者：
 
