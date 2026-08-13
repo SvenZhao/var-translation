@@ -128,6 +128,10 @@
     ],
     "submenus": [
       {
+        "id": "var-translation.editor",
+        "label": "驼峰翻译"
+      },
+      {
         "id": "var-translation.menulist",
         "label": "驼峰翻译"
       }
@@ -135,7 +139,7 @@
     "menus": {
       "editor/context": [
         {
-          "submenu": "var-translation.menulist",
+          "submenu": "var-translation.editor",
           "when": "editorTextFocus"
         }
       ],
@@ -150,7 +154,7 @@
           "group": "2_var-translation"
         }
       ],
-      "var-translation.menulist": [
+      "var-translation.editor": [
         {
           "command": "extension.varTranslation.camelCase",
           "group": "1",
@@ -198,6 +202,58 @@
         },
         {
           "command": "extension.varTranslation.pathCase",
+          "group": "10",
+          "title": "pathCase 文件路径 path/case"
+        }
+      ],
+      "var-translation.menulist": [
+        {
+          "command": "extension.varTranslation.translateFileName.camelCase",
+          "group": "1",
+          "title": "camelCase 驼峰(小) camelCase"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.pascalCase",
+          "group": "2",
+          "title": "pascalCase 驼峰(大) PascalCase"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.paramCase",
+          "group": "3",
+          "title": "paramCase 中划线(小) param-case"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.snakeCase",
+          "group": "4",
+          "title": "snakeCase 下划线 snake_case"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.constantCase",
+          "group": "5",
+          "title": "constantCase 常量 CONSTANT_CASE"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.capitalCase",
+          "group": "6",
+          "title": "capitalCase 分词(大) Capital Case"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.dotCase",
+          "group": "7",
+          "title": "dotCase 对象属性 dot case"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.headerCase",
+          "group": "8",
+          "title": "headerCase 中划线(大) Header-Case"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.noCase",
+          "group": "9",
+          "title": "noCase 分词(小) no case"
+        },
+        {
+          "command": "extension.varTranslation.translateFileName.pathCase",
           "group": "10",
           "title": "pathCase 文件路径 path/case"
         }

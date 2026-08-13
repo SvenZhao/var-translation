@@ -215,11 +215,15 @@ export function activate(context: ExtensionContext) {
   }));
 
   changeCaseMap.forEach((item) => {
-    context.subscriptions.push(commands.registerCommand(`extension.varTranslation.${item.name}`, (uri?: Uri) => {
+    // 编辑器模式：编辑器中选中文本转换。忽略 uri 参数，防止 VS Code 在编辑器右键
+    // 菜单传入当前文档 uri 而误走文件翻译路径（issue #97）
+    context.subscriptions.push(commands.registerCommand(`extension.varTranslation.${item.name}`, () => {
+      typeTranslation(item.name);
+    }));
+    // 文件模式：资源管理器右键重命名文件/目录
+    context.subscriptions.push(commands.registerCommand(`extension.varTranslation.translateFileName.${item.name}`, (uri?: Uri) => {
       if (uri?.fsPath) {
         void fileNameTranslator.translateFile(uri, item.name);
-      } else {
-        typeTranslation(item.name);
       }
     }));
   });
